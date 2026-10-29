@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#F3EEE6">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FB Clinic"><meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
 <title>FB Clinic</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -503,7 +503,7 @@ function vPacientes(){
   const q=S.busca.trim().toLowerCase();
   const list=S.pac.filter(p=>p.ativo!==false).filter(p=>!q||p.nome.toLowerCase().includes(q)||String(p.codigo)===q||(p.cpf||'').includes(q)||(p.celular||'').includes(q));
   return`<div class="head"><h1>Pacientes</h1><button class="btn pri" data-act="newpac">+ Novo paciente</button></div>
-   <input id="busca" data-input="busca" type="search" placeholder="Buscar por nome, código, CPF ou celular" value="${esc(S.busca)}" style="margin-bottom:14px" autocomplete="off">
+   <input id="busca" data-input="busca" type="search" placeholder="Buscar por nome, código, CPF ou telefone" value="${esc(S.busca)}" style="margin-bottom:14px" autocomplete="off">
    <div class="list" id="plist">${plist(list)}</div>`;
 }
 function plist(list){
@@ -533,13 +533,13 @@ function tDados(p){
     <label class="wide">Nome completo<input name="nome" required value="${esc(p.nome)}"></label>
     <label>Sexo<select name="sexo"><option value="">—</option><option value="feminino"${p.sexo==='feminino'?' selected':''}>Feminino</option><option value="masculino"${p.sexo==='masculino'?' selected':''}>Masculino</option></select></label>
     <label>Nascimento<input name="data_nascimento" id="dnasc" type="date" value="${esc(p.data_nascimento??'')}"><b id="dage" class="small" style="color:var(--accent)">${idadeTxt(p.data_nascimento)}</b></label>
-    ${f('cpf','CPF')}${f('rg','RG')}${f('celular','Celular','tel')}${f('telefone','Telefone','tel')}
+    ${f('cpf','CPF')}${f('rg','RG')}${f('celular','Telefone','tel')}
     <label class="wide">E-mail<input name="email" type="email" value="${esc(p.email??'')}"></label>
     ${f('como_chegou','Como chegou até nós')}
     <label>CEP<input name="cep" id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" value="${esc(p.cep??'')}"><span class="small muted" id="cepmsg">O endereço é preenchido sozinho.</span></label>
     ${f('logradouro','Endereço')}${f('numero','Número')}${f('bairro','Bairro')}${f('cidade','Cidade')}${f('uf','UF','text','maxlength="2"')}
     <div id="resp" class="wide${menor?'':' hide'}"><h3 style="margin-bottom:4px">Responsável</h3><div class="muted small" style="margin-bottom:10px">Paciente menor de 18 anos: preencha os dados do responsável.</div>
-      <div class="grid">${f('responsavel_nome','Nome do responsável')}${f('responsavel_nascimento','Nascimento do responsável','date')}${f('responsavel_cpf','CPF do responsável')}${f('responsavel_celular','Celular do responsável','tel')}</div></div>
+      <div class="grid">${f('responsavel_nome','Nome do responsável')}${f('responsavel_nascimento','Nascimento do responsável','date')}${f('responsavel_cpf','CPF do responsável')}${f('responsavel_celular','Telefone do responsável','tel')}</div></div>
     <label class="wide">Observações<textarea name="observacao">${esc(p.observacao??'')}</textarea></label></div>
     <div class="row" style="margin-top:14px"><button class="btn pri" type="submit">Salvar dados</button><span class="spacer"></span>
     ${S.confirm==='arq'?`<span class="small">Arquivar este paciente?</span><button class="btn bad sm" type="button" data-act="arquivar" data-id="${p.id}">Sim, arquivar</button><button class="btn sm" type="button" data-act="cancelconfirm">Não</button>`:`<button class="btn sm" type="button" data-act="askconfirm" data-c="arq">Arquivar paciente</button>`}</div></form>`;
@@ -735,7 +735,7 @@ const A={
   cancelconfirm(){S.confirm=null;render()},askconfirm(d){S.confirm=d.c;render()},
   async ficha(d){S.modal=null;S.pid=d.id;S.tab='dados';S.f=null;S.view='ficha';S.confirm=null;render();await run(loadFicha)},
   tab(d){S.tab=d.t;S.confirm=null;render()},
-  newpac(){simpleModal('Novo paciente',`<div class="grid"><label class="wide">Nome completo<input name="nome" required></label><label>Celular<input name="celular" type="tel"></label><label>Nascimento<input name="data_nascimento" id="dnasc" type="date"><b id="dage" class="small" style="color:var(--accent)"></b></label><label>Como chegou até nós<input name="como_chegou"></label></div>`,'newpac')},
+  newpac(){simpleModal('Novo paciente',`<div class="grid"><label class="wide">Nome completo<input name="nome" required></label><label>Telefone<input name="celular" type="tel"></label><label>Nascimento<input name="data_nascimento" id="dnasc" type="date"><b id="dage" class="small" style="color:var(--accent)"></b></label><label>Como chegou até nós<input name="como_chegou"></label></div>`,'newpac')},
   async arquivar(d){await run(()=>api.update('pacientes',d.id,{ativo:false}),'Paciente arquivado');await run(loadBase);S.confirm=null;await go('pacientes')},
   newtrat(){simpleModal('Novo tratamento',`<div class="grid"><label class="wide">Descrição<input name="descricao" required placeholder="Ex.: Facetas em resina composta"></label><label>Dentes ou região<input name="dentes_regiao" placeholder="Ex.: 13 ao 23"></label><label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" required></label>${profSel('')}<label>Situação<select name="status">${opts(TSTAT,'orcamento')}</select></label></div>`,'newtrat')},
   newevol(){simpleModal('Nova evolução',evolForm(null),'saveevol')},
