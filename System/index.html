@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F3EEE6">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FB Clinic"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
+<title>FB Clinic</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: lateral rail on desktop, bottom tab bar on phones; agenda as a 7h-20h timeline, ficha as tabs. */
+:root{
+  --bg:#F3EEE6;          /* bege tinta inverno gelado */
+  --surface:#FFFFFF;
+  --ink:#3A332A;
+  --muted:#85796B;
+  --line:#E4DACB;
+  --accent:#8C7648;      /* bronze do logo, escurecido para texto */
+  --accent-soft:#EFE6D4;
+  --brass:#A6936A;       /* cor exata do logo */
+  --ok:#4F7F5A; --ok-soft:#E3EEE3;
+  --warn:#A9741F; --warn-soft:#F6E9CE;
+  --bad:#A94A3A; --bad-soft:#F5DDD8;
+  --info:#4D6F8A; --info-soft:#DFE9F0;
+  --c1:#3F6B4B; --c2:#D2BC8A;  /* recebido: verde escuro; a receber: bronze claro (separados por luminosidade) */
+  --shadow:0 1px 2px rgba(58,51,42,.06),0 6px 20px rgba(58,51,42,.07);
+  --f-display:'Jost',system-ui,sans-serif;
+  --f-body:'Figtree',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1C1915;--surface:#26221D;--ink:#EFE8DB;--muted:#A0947F;--line:#3A342B;
+  --accent:#CDB27A;--accent-soft:#3A3326;--brass:#B7A57C;
+  --ok:#8DBE96;--ok-soft:#27352B;--warn:#E0B25F;--warn-soft:#3B3220;--bad:#E0806F;--bad-soft:#40231F;--info:#8DB3CF;--info-soft:#22313C;--c1:#8DBE96;--c2:#8A7648;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1C1915;--surface:#26221D;--ink:#EFE8DB;--muted:#A0947F;--line:#3A342B;
+  --accent:#CDB27A;--accent-soft:#3A3326;--brass:#B7A57C;
+  --ok:#8DBE96;--ok-soft:#27352B;--warn:#E0B25F;--warn-soft:#3B3220;--bad:#E0806F;--bad-soft:#40231F;--info:#8DB3CF;--info-soft:#22313C;--c1:#8DBE96;--c2:#8A7648;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);
+  padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1{font-size:26px}h2{font-size:20px}h3{font-size:16px}
+.muted{color:var(--muted)}.small{font-size:13px}.num{font-variant-numeric:tabular-nums}
+.hide{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* botões e campos */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:500;min-height:40px;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn:hover{border-color:var(--brass)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{filter:brightness(1.07)}
+:root[data-theme="dark"] .btn.pri{color:#1C1915}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.pri{color:#1C1915}}
+.btn.bad{color:var(--bad);border-color:var(--bad)}
+.btn.sm{min-height:32px;padding:4px 10px;font-size:13px}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn:disabled{opacity:.55;cursor:wait}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:500;min-width:0}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 11px;min-height:40px;width:100%;color:var(--ink);font-size:15px}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.grid .wide{grid-column:1/-1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.info{background:var(--info-soft);color:var(--info)}
+
+/* estrutura */
+.app{display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100%;gap:0 28px;max-width:1280px;margin:0 auto}
+.rail{position:sticky;top:0;align-self:start;height:100vh;padding:26px 0;display:flex;flex-direction:column;gap:22px}
+.rail img{width:150px;height:auto;display:block}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav button{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;border:0;background:transparent;cursor:pointer;font-weight:500;color:var(--muted);text-align:left}
+.nav button svg{width:20px;height:20px;flex:none}
+.nav button:hover{background:var(--accent-soft)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.rail .foot{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+main{padding:26px 0 40px;min-width:0}
+.demo{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500;margin-bottom:16px}
+.head{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.head h1{margin-right:auto}
+.tabbar{display:none}
+@media (max-width:820px){
+  .app{grid-template-columns:minmax(0,1fr);gap:0}
+  .rail{display:none}
+  main{padding:16px 0 96px}
+  .tabbar{display:grid;grid-template-columns:repeat(var(--n,5),1fr);position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);z-index:20;
+    padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+  .tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;padding:6px 2px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;min-height:48px}
+  .tabbar button svg{width:22px;height:22px}
+  .tabbar button[aria-current="page"]{color:var(--accent)}
+  h1{font-size:22px}
+}
+
+/* login */
+.login{min-height:100%;display:grid;place-items:center;padding:24px 0}
+.login .box{width:min(400px,100%);display:flex;flex-direction:column;gap:18px}
+.login img{width:210px;max-width:70%;margin:0 auto 4px;display:block}
+.err{color:var(--bad);font-size:13px;min-height:18px}
+
+/* agenda */
+.tl{display:grid;grid-template-columns:48px minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tl .hours div{height:var(--hh);font-size:12px;color:var(--muted);text-align:right;padding:0 8px;transform:translateY(-8px)}
+.tl .hours{padding-top:12px}
+.tl .cols{position:relative;margin-top:12px;border-left:1px solid var(--line);cursor:cell}
+.tl .hl{position:absolute;left:0;right:0;border-top:1px solid var(--line)}
+.tl .hl.half{border-top-style:dashed;opacity:.55}
+.ev{position:absolute;border-radius:8px;padding:5px 8px;overflow:hidden;font-size:13px;line-height:1.3;cursor:pointer;border:1px solid transparent;border-left-width:4px;text-align:left;background:var(--accent-soft);color:var(--ink);width:auto}
+.ev b{font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev span{color:var(--muted);font-size:12px}
+.ev.s-agendado{border-left-color:var(--brass)}
+.ev.s-confirmado{background:var(--ok-soft);border-left-color:var(--ok)}
+.ev.s-em_atendimento{background:var(--info-soft);border-left-color:var(--info)}
+.ev.s-atendido{background:var(--surface);border-color:var(--line);border-left-color:var(--muted);opacity:.85}
+.ev.s-faltou{background:var(--warn-soft);border-left-color:var(--warn)}
+.ev.s-cancelado,.ev.s-remarcado{background:var(--bad-soft);border-left-color:var(--bad);opacity:.7}
+.ev.s-cancelado b{text-decoration:line-through}
+.ev.comp{background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 8px,var(--surface) 8px,var(--surface) 16px);border-left-color:var(--muted)}
+.now{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--bad);z-index:3;pointer-events:none}
+.now::before{content:"";position:absolute;left:-5px;top:-6px;width:9px;height:9px;border-radius:50%;background:var(--bad)}
+.dnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dnav .lbl{font-family:var(--f-display);font-size:18px;font-weight:500;min-width:0}
+.stat{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+
+/* listas */
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.item{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;background:transparent;border-left:0;border-right:0;border-top:0;text-align:left;width:100%;min-width:0}
+.item:last-child{border-bottom:0}
+.item:hover{background:var(--accent-soft)}
+.item .nm{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--f-display);font-weight:600;flex:none}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+
+/* ficha */
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:14px 0 18px;scrollbar-width:none}
+.tabs button{border:0;background:transparent;padding:10px 14px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.sum div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.sum small{display:block;color:var(--muted);font-size:12px}
+.sum b{font-family:var(--f-display);font-size:20px;font-weight:500}
+.tline{display:flex;flex-direction:column;gap:12px}
+.ent{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.ent.signed{border-left:4px solid var(--ok)}
+.ent .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.ent .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
+.ent .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tbl{overflow-x:auto}
+.sum .clk{cursor:pointer}.sum .clk:hover{border-color:var(--brass)}
+.chart{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 8px;margin-bottom:16px;position:relative}
+.chart svg{display:block;min-width:560px;width:100%;height:auto}
+.chart .lg{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:6px}
+.chart .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.chart text{fill:var(--muted);font:11px var(--f-body)}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .bar{cursor:default}.chart .bar:hover{filter:brightness(1.12)}
+.tip{position:fixed;z-index:90;pointer-events:none;background:var(--ink);color:var(--bg);padding:7px 10px;border-radius:8px;font-size:12px;line-height:1.35;box-shadow:var(--shadow)}
+.chks{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 16px}
+label.chk{flex-direction:row;align-items:center;gap:9px;color:var(--ink);font-size:14px;font-weight:400;cursor:pointer;padding:3px 0}
+.chk input{width:18px;height:18px;min-height:0;flex:none;accent-color:var(--bad);padding:0}
+.sec{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+.sec h3{display:flex;align-items:center;gap:8px}
+.alb{width:24px;height:24px;border-radius:50%;background:var(--bad);color:#fff;font:700 14px/1 var(--f-display);display:inline-grid;place-items:center;border:2px solid var(--surface);cursor:pointer;padding:0;flex:none}
+.alb:hover{filter:brightness(1.12)}
+.alb.lg{width:34px;height:34px;font-size:19px}
+.ev .alb{position:absolute;top:4px;right:4px}
+.ev.has-al b,.ev.has-al span{padding-right:22px}
+.fh{position:relative;padding-right:46px}
+.fh .alb{position:absolute;top:0;right:0}
+.alrt{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.alrt:last-child{border-bottom:0}
+.alrt b{display:block}
+.alrt .pill{flex:none;margin-top:2px;min-width:58px;justify-content:center}
+
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(30,25,18,.5);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px 16px;overflow:auto}
+.modal{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);width:min(620px,100%);padding:20px;display:flex;flex-direction:column;gap:16px;margin:auto 0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:8px 14px;cursor:pointer;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:80;font-size:14px;max-width:min(92vw,520px);box-shadow:var(--shadow)}
+@media (min-width:821px){.toast{bottom:28px}}
+@media (prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(10px);opacity:0}}}
+</style>
+
+</head><body><div id="root"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* ===================== configuração ===================== */
+const CFG={url:'https://zccjfgezqtzdmhvqdqtw.supabase.co',key:'sb_publishable_0VC8_DmDlvGjEdwSZ3a6wQ_azHkJb5y'};
+const DEMO=false;
+const LOGO='data:image/png;base64,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';
+const H0=6,H1=22,HH=64; // grade da agenda: 6h às 22h, 64px por hora
+
+/* ===================== utilidades ===================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pYmd=s=>{const [y,m,d]=s.slice(0,10).split('-').map(Number);return new Date(y,m-1,d)};
+const hm=d=>`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const brl=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const dBR=s=>s?pYmd(s).toLocaleDateString('pt-BR'):'';
+const dtBR=s=>s?new Date(s).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'';
+const todayD=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const idade=s=>{if(!s)return null;const n=pYmd(s),t=new Date();let a=t.getFullYear()-n.getFullYear();if(t<new Date(t.getFullYear(),n.getMonth(),n.getDate()))a--;return a};
+const ini=n=>(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+const clean=o=>Object.fromEntries(Object.entries(o).map(([k,v])=>[k,v===''?null:v]));
+const STATUS={agendado:'Agendado',confirmado:'Confirmado',em_atendimento:'Em atendimento',atendido:'Atendido',faltou:'Faltou',cancelado:'Cancelado',remarcado:'Remarcado'};
+const FORMAS={pix:'Pix',dinheiro:'Dinheiro',cartao_credito:'Cartão de crédito',cartao_debito:'Cartão de débito',boleto:'Boleto',transferencia:'Transferência',convenio:'Convênio',outro:'Outro'};
+const TSTAT={orcamento:'Orçamento',em_andamento:'Em andamento',entregue:'Entregue'};
+const FUNC={dentista:'Dentista',auxiliar:'Auxiliar',recepcao:'Recepção',outro:'Outro'};
+const opts=(o,sel)=>Object.entries(o).map(([k,v])=>`<option value="${k}"${k===sel?' selected':''}>${esc(v)}</option>`).join('');
+const IC={
+ cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+ pac:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.6-3.6 3.5-5.5 7-5.5s6.4 1.9 7 5.5"/></svg>',
+ eq:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.5-3 2.7-4.6 5.5-4.6s5 1.6 5.5 4.6M16 6.2a3 3 0 0 1 0 5.6M18 14.6c1.6.5 2.8 1.9 3 4.2"/></svg>',
+ fin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.4c-.5-.8-1.5-1.2-2.8-1.2-1.6 0-2.7.8-2.7 2s1 1.7 2.7 2 2.8.8 2.8 2-1.2 2-2.8 2c-1.3 0-2.3-.4-2.9-1.2M12 6.6v1.6M12 15.8v1.6"/></svg>',
+ out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14M10 8l-4 4 4 4M6 12h10"/></svg>',
+ lock:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'
+};
+
+/* ===================== anamnese e alertas ===================== */
+const ALERG=[['a_an_local','Anestésico local (lidocaína, articaína, mepivacaína…)'],['a_sulfito','Sulfitos (presentes em anestésicos com vasoconstritor)'],['a_latex','Látex'],['a_penicilina','Penicilina / antibióticos'],['a_dipirona','Dipirona / outros analgésicos'],['a_ains','Anti-inflamatórios (AINEs, AAS)'],['a_iodo','Iodo / antissépticos'],['a_metais','Metais (níquel e outros)']];
+const MEDS=[['m_anticoag','Anticoagulante / antiplaquetário (AAS, varfarina, clopidogrel, rivaroxabana…)'],['m_bisfosfonato','Bisfosfonato (alendronato, zoledronato…)'],['m_corticoide','Corticoide de uso contínuo'],['m_antidiabetico','Insulina ou antidiabéticos orais'],['m_anti_hiper','Anti-hipertensivo'],['m_ansiolitico','Ansiolítico / antidepressivo / outro psicotrópico']];
+const CONDS=[['c_hipertensao','Hipertensão'],['c_diabetes','Diabetes'],['c_cardiopatia','Doença cardíaca / infarto / arritmia'],['c_marcapasso','Marcapasso'],['c_febre_reumatica','Febre reumática / problema valvar'],['c_avc','AVC'],['c_coagulacao','Problema de coagulação / sangramento excessivo'],['c_renal','Doença renal'],['c_hepatico','Doença hepática / hepatite'],['c_tireoide','Doença da tireoide'],['c_respiratorio','Asma / problema respiratório'],['c_epilepsia','Epilepsia / convulsões'],['c_osteoporose','Osteoporose'],['c_cancer','Câncer / quimioterapia / radioterapia'],['c_imuno','Imunossupressão / HIV'],['c_psiquiatrico','Ansiedade / depressão / outro transtorno'],['c_gestante','Gestante'],['c_lactante','Amamentando']];
+const HABITOS=[['h_fuma','Fumante'],['h_alcool','Consome álcool com frequência'],['h_bruxismo','Bruxismo (range ou aperta os dentes)'],['h_onicofagia','Roe unhas ou objetos'],['h_respira_boca','Respira pela boca']];
+const ODONTO=[['o_sangramento','Sangramento gengival'],['o_sensibilidade','Sensibilidade nos dentes'],['o_dor','Dor atual'],['o_medo','Medo ou ansiedade com tratamento odontológico'],['o_desmaio','Já desmaiou ou passou mal em atendimento'],['o_complicacao_anestesia','Já teve reação ou complicação com anestesia'],['o_ortodontia','Já fez ou faz tratamento ortodôntico']];
+// [nível, título, orientação]. Sinalizações de apoio: a conduta é sempre do dentista.
+const REGRAS={
+ a_an_local:['alta','Alergia a anestésico local','Confirmar qual anestésico causou a reação e evitar o mesmo grupo.'],
+ a_sulfito:['alta','Alergia a sulfitos','Sulfitos entram na formulação de anestésicos com vasoconstritor. Conferir o produto.'],
+ a_latex:['alta','Alergia a látex','Usar luvas e materiais sem látex.'],
+ a_penicilina:['media','Alergia a penicilina / antibióticos','Evitar penicilinas e derivados na prescrição.'],
+ a_dipirona:['media','Alergia a dipirona / analgésicos','Escolher outro analgésico.'],
+ a_ains:['media','Alergia a anti-inflamatórios / AAS','Evitar AINEs na prescrição.'],
+ a_iodo:['media','Alergia a iodo / antissépticos','Conferir antissépticos e materiais com iodo.'],
+ a_metais:['media','Alergia a metais','Conferir materiais metálicos usados no tratamento.'],
+ m_anticoag:['alta','Usa anticoagulante / antiplaquetário','Risco de sangramento em procedimentos invasivos. Avaliar com o médico e exames de coagulação.'],
+ m_bisfosfonato:['alta','Usa bisfosfonato','Risco de osteonecrose dos maxilares em cirurgias e procedimentos ósseos.'],
+ m_corticoide:['media','Usa corticoide contínuo','Cicatrização e resposta ao estresse podem estar alteradas.'],
+ m_antidiabetico:['media','Usa insulina / antidiabéticos','Evitar jejum prolongado e ficar atento a hipoglicemia.'],
+ m_anti_hiper:['info','Usa anti-hipertensivo','Conferir a pressão antes do atendimento.'],
+ m_ansiolitico:['media','Usa psicotrópico','Conferir interações com anestésicos e prescrições.'],
+ c_hipertensao:['media','Hipertensão','Aferir a pressão antes e usar vasoconstritor com moderação.'],
+ c_diabetes:['media','Diabetes','Atenção à glicemia, à cicatrização e a infecções.'],
+ c_cardiopatia:['alta','Doença cardíaca','Limitar vasoconstritor, reduzir o estresse e considerar avaliação do cardiologista.'],
+ c_marcapasso:['media','Marcapasso','Cuidado com aparelhos eletrônicos (bisturi elétrico, ultrassom).'],
+ c_febre_reumatica:['alta','Febre reumática / problema valvar','Verificar com o cardiologista se precisa de profilaxia antibiótica.'],
+ c_avc:['media','Histórico de AVC','Avaliar uso de anticoagulantes e vasoconstritor.'],
+ c_coagulacao:['alta','Problema de coagulação','Risco de sangramento. Avaliar com o médico antes de procedimentos invasivos.'],
+ c_renal:['media','Doença renal','Cuidado com doses de medicamentos e anti-inflamatórios.'],
+ c_hepatico:['media','Doença hepática / hepatite','Cuidado com anestésicos e analgésicos metabolizados no fígado. Manter biossegurança padrão.'],
+ c_tireoide:['media','Doença da tireoide','Hipertireoidismo não controlado: evitar vasoconstritor.'],
+ c_respiratorio:['media','Asma / problema respiratório','Pedir que traga a bombinha e evitar AINEs se for sensível.'],
+ c_epilepsia:['media','Epilepsia','Ter um plano para crise convulsiva e evitar sessões longas sem pausa.'],
+ c_osteoporose:['info','Osteoporose','Perguntar sobre uso de bisfosfonatos.'],
+ c_cancer:['alta','Câncer / quimio / radioterapia','Alinhar condutas com o oncologista antes de procedimentos.'],
+ c_imuno:['media','Imunossupressão / HIV','Risco maior de infecção. Alinhar condutas com o médico.'],
+ c_psiquiatrico:['info','Ansiedade / depressão','Atendimento mais calmo e conferir medicações em uso.'],
+ c_gestante:['alta','Gestante','Cuidado com anestesia, medicamentos e radiografias. Procedimentos eletivos, de preferência no 2º trimestre.'],
+ c_lactante:['info','Amamentando','Conferir medicamentos prescritos.'],
+ o_complicacao_anestesia:['alta','Já teve reação ou complicação com anestesia','Perguntar o que aconteceu e qual anestésico foi usado.'],
+ o_desmaio:['media','Já passou mal em atendimento','Atender com paciente confortável e com pausas.'],
+ o_medo:['info','Medo ou ansiedade com tratamento','Reservar mais tempo e conversar antes.'],
+ h_fuma:['info','Fumante','Pode atrasar a cicatrização.']
+};
+const NIVEL={alta:0,media:1,info:2};
+function alertas(c){
+  if(!c)return[];
+  const out=[];
+  for(const [k,[n,t,o]] of Object.entries(REGRAS))if(c[k])out.push({n,t,o});
+  if(c.alergias_outras)out.push({n:'alta',t:'Outras alergias: '+c.alergias_outras,o:'Conferir antes de prescrever ou usar materiais.'});
+  if(c.medicamentos)out.push({n:'media',t:'Medicações em uso: '+c.medicamentos,o:'Conferir interações e contraindicações com anestésicos e prescrições.'});
+  if(c.cond_outras)out.push({n:'media',t:'Outras condições: '+c.cond_outras,o:'Avaliar o impacto no atendimento.'});
+  if(c.atencao)out.push({n:'alta',t:'Ponto de atenção: '+c.atencao,o:'Registrado pela equipe.'});
+  return out.sort((a,b)=>NIVEL[a.n]-NIVEL[b.n]);
+}
+const temAlerta=pid=>alertas(S.anam[pid]).length>0;
+const alBtn=(pid,cls='')=>`<button type="button" class="alb ${cls}" data-act="alertas" data-pid="${pid}" aria-label="Ver atenções deste paciente" title="Atenções com este paciente">!</button>`;
+
+/* ===================== camada de dados ===================== */
+let sb=null;
+function sbApi(){
+  sb=supabase.createClient(CFG.url,CFG.key);
+  const ck=r=>{if(r.error)throw r.error;return r.data};
+  return{
+    async session(){const {data}=await sb.auth.getSession();return data.session?.user?.email||null},
+    async login(e,p){const r=await sb.auth.signInWithPassword({email:e,password:p});if(r.error)throw r.error;return r.data.user.email},
+    async logout(){await sb.auth.signOut()},
+    async perfil(){const u=(await sb.auth.getUser()).data.user;if(!u)return null;const r=await sb.from('profiles').select('ativo,financeiro').eq('id',u.id).maybeSingle();return r.data},
+    async list(t,o={}){
+      let q=sb.from(t).select('*');
+      for(const [k,v] of Object.entries(o.eq||{}))q=q.eq(k,v);
+      if(o.gte)q=q.gte(o.gte[0],o.gte[1]);
+      if(o.lt)q=q.lt(o.lt[0],o.lt[1]);
+      for(const [c,asc] of (o.order||[]))q=q.order(c,{ascending:asc});
+      return ck(await q.limit(5000));
+    },
+    async insert(t,row){return ck(await sb.from(t).insert(row).select().single())},
+    async insertMany(t,rows){return ck(await sb.from(t).insert(rows).select())},
+    async update(t,id,p){return ck(await sb.from(t).update(p).eq('id',id).select().single())},
+    async remove(t,id){const r=await sb.from(t).delete().eq('id',id);if(r.error)throw r.error}
+  };
+}
+function demoApi(){
+  const uid=()=>'d'+Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+  const now=new Date();const at=(h,m)=>{const d=todayD();d.setHours(h,m,0,0);return d.toISOString()};
+  const dd=n=>{const d=todayD();d.setDate(d.getDate()+n);return ymd(d)};
+  const db={_cod:4,
+    equipe:[{id:'e1',nome:'Dra. Jacqueline',funcao:'dentista',cro:'',ativo:true},{id:'e2',nome:'Dr. Mateus',funcao:'dentista',cro:'',ativo:true},{id:'e3',nome:'Dra. Maíta',funcao:'dentista',cro:'',ativo:true},{id:'e4',nome:'Dr. Lucas',funcao:'dentista',cro:'',ativo:true},{id:'e5',nome:'Dra. Marina',funcao:'dentista',cro:'',ativo:true},{id:'e6',nome:'Dra. Regina',funcao:'dentista',cro:'',ativo:true},{id:'e7',nome:'Dr. Bruno',funcao:'dentista',cro:'',ativo:true}],
+    pacientes:[
+      {id:'p1',codigo:1,nome:'Camila Albuquerque (exemplo)',sexo:'feminino',data_nascimento:'1989-04-12',celular:'(47) 99999-0001',plano:'Particular',cidade:'Balneário Camboriú',uf:'SC',ativo:true,etiquetas:[]},
+      {id:'p2',codigo:2,nome:'Ricardo Teixeira (exemplo)',sexo:'masculino',data_nascimento:'1976-09-30',celular:'(47) 99999-0002',plano:'Particular',cidade:'Itajaí',uf:'SC',ativo:true,etiquetas:[]},
+      {id:'p3',codigo:3,nome:'Helena Prado (exemplo)',sexo:'feminino',data_nascimento:'1994-01-22',celular:'(47) 99999-0003',plano:'Particular',cidade:'Camboriú',uf:'SC',ativo:true,etiquetas:[]},
+      {id:'p4',codigo:4,nome:'Paulo Sampaio (exemplo)',sexo:'masculino',data_nascimento:'1968-11-05',celular:'(47) 99999-0004',plano:'Particular',cidade:'Balneário Camboriú',uf:'SC',ativo:true,etiquetas:[]}],
+    anamneses:[
+      {id:'a1',paciente_id:'p1',conteudo:{queixa:'Quer corrigir o formato e a cor dos dentes da frente.',a_latex:true,alergias_outras:'Dipirona (urticária)',usa_med:'nao',h_bruxismo:true}},
+      {id:'a2',paciente_id:'p2',conteudo:{queixa:'Avaliação para laminados.',usa_med:'sim',medicamentos:'Losartana 50 mg, 1x ao dia\nAAS 100 mg',m_anticoag:true,m_anti_hiper:true,c_hipertensao:true,atencao:'Pedir a pressão aferida antes de anestesiar.'}},
+      {id:'a3',paciente_id:'p3',conteudo:{queixa:'Clareamento e faceta no 21.',usa_med:'nao'}},
+      {id:'a4',paciente_id:'p4',conteudo:{usa_med:'sim',medicamentos:'Metformina 850 mg',c_diabetes:true,m_antidiabetico:true}}],
+    agendamentos:[
+      {id:'g1',tipo:'consulta',paciente_id:'p1',profissional_id:'e2',inicio:at(8,0),duracao_min:120,status:'confirmado',observacao:'Facetas em resina: 2ª sessão'},
+      {id:'g2',tipo:'consulta',paciente_id:'p2',profissional_id:'e1',inicio:at(9,30),duracao_min:60,status:'agendado',observacao:'Avaliação'},
+      {id:'g3',tipo:'compromisso',titulo:'Reunião de equipe',profissional_id:'e2',inicio:at(12,30),duracao_min:30,status:'agendado'},
+      {id:'g4',tipo:'consulta',paciente_id:'p3',profissional_id:'e2',inicio:at(14,0),duracao_min:180,status:'agendado',observacao:'Laminados cerâmicos: preparo'},
+      {id:'g5',tipo:'consulta',paciente_id:'p4',profissional_id:'e1',inicio:at(15,0),duracao_min:60,status:'agendado'}],
+    tratamentos:[
+      {id:'t1',paciente_id:'p1',descricao:'Facetas em resina composta (10 dentes)',dentes_regiao:'13 ao 23',valor:18000,status:'em_andamento',profissional_id:'e2'},
+      {id:'t2',paciente_id:'p3',descricao:'Laminados cerâmicos',dentes_regiao:'14 ao 24',valor:36000,status:'em_andamento',profissional_id:'e2'}],
+    evolucoes:[
+      {id:'v1',paciente_id:'p1',tratamento_id:'t1',data:dd(-14),profissional_id:'e2',descricao:'Moldagem e registro de cor. Mock-up aprovado pela paciente.',criado_em:new Date(Date.now()-14*864e5).toISOString()},
+      {id:'v2',paciente_id:'p1',tratamento_id:'t1',data:dd(-1),profissional_id:'e2',descricao:'Preparo conservador e primeira camada de resina nos elementos 11 e 21.',criado_em:new Date(Date.now()-864e5).toISOString()}],
+    pagamentos:[
+      {id:'m1',paciente_id:'p1',tratamento_id:'t1',descricao:'Entrada (1/3)',valor:6000,forma:'pix',parcelas:1,vencimento:dd(-14),data_pagamento:dd(-14),status:'pago'},
+      {id:'m2',paciente_id:'p1',tratamento_id:'t1',descricao:'Parcela (2/3)',valor:6000,forma:'cartao_credito',parcelas:1,vencimento:dd(-2),data_pagamento:null,status:'pendente'},
+      {id:'m4',paciente_id:'p2',descricao:'Avaliação e planejamento',valor:450,forma:'pix',parcelas:1,vencimento:dd(0),data_pagamento:dd(0),status:'pago'},
+      {id:'m5',paciente_id:'p3',tratamento_id:'t2',descricao:'Entrada (1/4)',valor:9000,forma:'cartao_credito',parcelas:1,vencimento:dd(3),data_pagamento:null,status:'pendente'},
+      {id:'m6',paciente_id:'p4',descricao:'Restauração',valor:1200,forma:'boleto',parcelas:1,vencimento:dd(-5),data_pagamento:null,status:'pendente'},
+      {id:'m3',paciente_id:'p1',tratamento_id:'t1',descricao:'Parcela (3/3)',valor:6000,forma:'cartao_credito',parcelas:1,vencimento:dd(28),data_pagamento:null,status:'pendente'}]};
+  const cl=x=>JSON.parse(JSON.stringify(x));
+  return{
+    async session(){return null},
+    async login(e){return e||'demo@fbclinic'},
+    async logout(){},
+    async perfil(){return null},
+    async list(t,o={}){
+      let r=db[t].filter(x=>Object.entries(o.eq||{}).every(([k,v])=>x[k]===v));
+      if(o.gte)r=r.filter(x=>x[o.gte[0]]>=o.gte[1]);
+      if(o.lt)r=r.filter(x=>x[o.lt[0]]<o.lt[1]);
+      for(const [c,asc] of [...(o.order||[])].reverse())r.sort((a,b)=>((a[c]??'')>(b[c]??'')?1:(a[c]??'')<(b[c]??'')?-1:0)*(asc?1:-1));
+      return cl(r);
+    },
+    async insert(t,row){
+      const r={id:uid(),criado_em:new Date().toISOString(),ativo:true,etiquetas:[],status:undefined,...row};
+      if(r.status===undefined)delete r.status;
+      if(t==='pacientes')r.codigo=++db._cod;
+      if(t==='agendamentos'&&!r.status)r.status='agendado';
+      if(t==='pagamentos'&&!r.status)r.status='pendente';
+      if(t==='tratamentos'&&!r.status)r.status='orcamento';
+      db[t].push(r);return cl(r)},
+    async insertMany(t,rows){const out=[];for(const r of rows)out.push(await this.insert(t,r));return out},
+    async update(t,id,p){const r=db[t].find(x=>x.id===id);
+      Object.assign(r,p);return cl(r)},
+    async remove(t,id){const r=db[t].find(x=>x.id===id);
+      db[t]=db[t].filter(x=>x.id!==id)}
+  };
+}
+const api=DEMO?demoApi():sbApi();
+
+/* ===================== estado ===================== */
+const S={canFin:false,fin:[],trAll:[],mes:ymd(new Date()).slice(0,7),fst:'',fq:'',hide:false,anam:{},user:null,view:'agenda',date:todayD(),prof:'',equipe:[],pac:[],appts:[],pid:null,tab:'dados',f:null,busca:'',loading:false,confirm:null,modal:null};
+const pacById=id=>S.pac.find(p=>p.id===id);
+const eqById=id=>S.equipe.find(p=>p.id===id);
+const pacLabel=p=>`${p.nome} · #${p.codigo}`;
+const dentistas=()=>S.equipe.filter(e=>e.ativo&&e.funcao==='dentista');
+function toast(msg){document.querySelector('.toast')?.remove();const t=document.createElement('div');t.className='toast';t.textContent=msg;t.setAttribute('role','status');document.body.appendChild(t);setTimeout(()=>t.remove(),4200)}
+async function run(fn,okMsg){try{const r=await fn();if(okMsg)toast(okMsg);return r}catch(e){toast('Não foi possível concluir: '+(e.message||e));console.error(e)}}
+
+/* ===================== carregamento ===================== */
+async function loadBase(){
+  let an;[S.equipe,S.pac,an]=await Promise.all([api.list('equipe',{order:[['nome',true]]}),api.list('pacientes',{order:[['nome',true]]}),api.list('anamneses')]);
+  S.anam=Object.fromEntries(an.map(a=>[a.paciente_id,a.conteudo]));
+}
+async function loadDay(){
+  const a=new Date(S.date),b=new Date(a);b.setDate(b.getDate()+1);
+  S.appts=await api.list('agendamentos',{gte:['inicio',a.toISOString()],lt:['inicio',b.toISOString()],order:[['inicio',true]]});
+}
+async function loadFicha(){
+  const id=S.pid,e={paciente_id:id};
+  const [an,tr,ev,ag]=await Promise.all([
+    api.list('anamneses',{eq:e}),api.list('tratamentos',{eq:e,order:[['criado_em',false]]}),
+    api.list('evolucoes',{eq:e,order:[['data',false],['criado_em',false]]}),
+    api.list('agendamentos',{eq:e,order:[['inicio',false]]})]);
+  if(S.pid!==id)return;
+  S.f={an:an[0]||null,tr,ev,ag};S.anam[id]=an[0]?.conteudo;render();
+}
+async function loadFin(){
+  [S.fin,S.trAll]=await Promise.all([api.list('pagamentos',{order:[['vencimento',true]]}),api.list('tratamentos')]);
+}
+async function go(view){
+  if(view==='fin'&&!S.canFin)view='agenda';
+  S.view=view;S.modal=null;render();
+  if(view==='agenda'){await run(loadDay);render()}
+  if(view==='pacientes'||view==='equipe'){await run(loadBase);render()}
+  if(view==='fin'){await run(async()=>{await loadBase();await loadFin()});render()}
+}
+async function enter(email){
+  S.user=email;S.loading=true;render();
+  if(!DEMO){
+    const pf=await api.perfil().catch(()=>null);
+    S.canFin=!!(pf&&pf.ativo&&pf.financeiro);
+    if(!pf||!pf.ativo){await api.logout().catch(()=>{});S.user=null;S.loading=false;render();$('#lerr').textContent='Este login ainda não foi ativado. Fale com o administrador do sistema.';return}
+  }
+  await run(async()=>{await loadBase();await loadDay()});
+  S.loading=false;S.view='agenda';render();
+}
+
+/* ===================== renderização ===================== */
+function render(){
+  const root=$('#root');
+  if(!S.user){root.innerHTML=vLogin();return}
+  const nav=[['agenda','Agenda',IC.cal],['pacientes','Pacientes',IC.pac],...(S.canFin?[['fin','Financeiro',IC.fin]]:[]),['equipe','Equipe',IC.eq]];
+  const cur=S.view==='ficha'?'pacientes':S.view;
+  const body=S.loading?'<div class="empty">Carregando…</div>':S.view==='agenda'?vAgenda():S.view==='pacientes'?vPacientes():S.view==='ficha'?vFicha():S.view==='fin'?vFin():vEquipe();
+  root.innerHTML=`<div class="app">
+   <aside class="rail"><img src="${LOGO}" alt="FB Clinic">
+     <nav class="nav" aria-label="Principal">${nav.map(([k,l,i])=>`<button data-act="go" data-v="${k}"${cur===k?' aria-current="page"':''}>${i}${l}</button>`).join('')}</nav>
+     <div class="foot"><span class="small muted">${esc(S.user)}</span><button class="btn sm" data-act="logout">${IC.out}Sair</button></div></aside>
+   <main>${DEMO?'<div class="demo">Modo demonstração: dados de exemplo, nada é salvo. A versão da clínica grava tudo no banco de dados.</div>':''}${body}</main>
+   <nav class="tabbar" aria-label="Principal" style="--n:${nav.length+1}">${nav.map(([k,l,i])=>`<button data-act="go" data-v="${k}"${cur===k?' aria-current="page"':''}>${i}${l}</button>`).join('')}<button data-act="logout">${IC.out}Sair</button></nav>
+  </div>${S.modal||''}`;
+}
+function vLogin(){
+  return`<div class="login"><form class="box card" data-submit="login" style="padding:28px">
+    <img src="${LOGO}" alt="FB Clinic">
+    ${DEMO?'<div class="demo" style="margin:0">Modo demonstração: pode entrar com qualquer e-mail e senha.</div>':''}
+    <label>E-mail<input id="lemail" type="email" autocomplete="username" required value="${DEMO?'recepcao@fbclinic.com':''}"></label>
+ ${DEMO?'<label>Entrar como<select id="lrole"><option value="1">Equipe com acesso ao Financeiro</option><option value="0">Equipe sem acesso ao Financeiro</option></select></label>':''}
+    <label>Senha<input id="lsenha" type="password" autocomplete="current-password" required value="${DEMO?'demonstracao':''}"></label>
+    <div class="err" id="lerr" role="alert"></div>
+    <button class="btn pri" type="submit">Entrar</button></form></div>`;
+}
+
+/* ---------- agenda ---------- */
+function lanes(list){
+  const sorted=[...list].sort((a,b)=>a._s-b._s),out=[];let cl=[],end=0,ends=[];
+  const flush=()=>{const n=Math.max(...cl.map(c=>c._l))+1;cl.forEach(c=>c._n=n);out.push(...cl);cl=[];ends=[];end=0};
+  for(const e of sorted){
+    if(cl.length&&e._s>=end)flush();
+    let l=ends.findIndex(x=>x<=e._s);if(l<0){l=ends.length;ends.push(0)}
+    ends[l]=e._e;e._l=l;cl.push(e);end=Math.max(end,e._e);
+  }
+  if(cl.length)flush();return out;
+}
+function vAgenda(){
+  const isToday=ymd(S.date)===ymd(new Date());
+  const ev=S.appts.filter(a=>!S.prof||a.profissional_id===S.prof).map(a=>{const d=new Date(a.inicio);return{...a,_s:d.getHours()*60+d.getMinutes(),_d:d}}).map(a=>({...a,_e:a._s+(a.duracao_min||60)}));
+  const L=lanes(ev);
+  const lbl=S.date.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const total=(H1-H0)*HH;
+  let lines='',hours='';
+  for(let h=H0;h<=H1;h++){lines+=`<div class="hl" style="top:${(h-H0)*HH}px"></div>`;if(h<H1)lines+=`<div class="hl half" style="top:${(h-H0)*HH+HH/2}px"></div>`;hours+=`<div>${pad(h)}:00</div>`}
+  const blocks=L.map(a=>{
+    const top=Math.max(0,(a._s-H0*60)/60*HH),h=Math.max(24,a.duracao_min/60*HH-2);
+    const p=pacById(a.paciente_id),pr=eqById(a.profissional_id);
+    const nm=a.tipo==='compromisso'?(a.titulo||'Compromisso'):(p?p.nome.replace(' (exemplo)',''):'Paciente');
+    const al=a.tipo!=='compromisso'&&a.paciente_id&&temAlerta(a.paciente_id);
+    return`<div role="button" tabindex="0" class="ev s-${a.status}${a.tipo==='compromisso'?' comp':''}${al?' has-al':''}" data-act="appt" data-id="${a.id}" style="top:${top}px;height:${h}px;left:calc(${a._l/a._n*100}% + 3px);width:calc(${100/a._n}% - 6px)">
+      <b>${esc(nm)}</b><span>${hm(a._d)}–${hm(new Date(a._d.getTime()+a.duracao_min*6e4))}${pr?' · '+esc(pr.nome.split(' ').slice(0,2).join(' ')):''}</span>${al?alBtn(a.paciente_id):''}</div>`}).join('');
+  const now=new Date(),nowTop=((now.getHours()*60+now.getMinutes())-H0*60)/60*HH;
+  const nowLine=isToday&&nowTop>=0&&nowTop<=total?`<div class="now" style="top:${nowTop}px"></div>`:'';
+  const cnt=S.appts.filter(a=>a.status!=='cancelado'&&a.tipo==='consulta').length;
+  const conf=S.appts.filter(a=>a.status==='confirmado').length;
+  return`<div class="head"><h1>Agenda</h1>
+    <select id="fprof" data-change="prof" style="width:auto;min-width:170px" aria-label="Profissional"><option value="">Todos os profissionais</option>${dentistas().map(d=>`<option value="${d.id}"${S.prof===d.id?' selected':''}>${esc(d.nome)}</option>`).join('')}</select>
+    <button class="btn pri" data-act="appt" data-new="1">+ Novo agendamento</button></div>
+   <div class="dnav" style="margin-bottom:12px">
+     <button class="btn sm" data-act="day" data-n="-1" aria-label="Dia anterior">‹</button>
+     <button class="btn sm" data-act="day" data-n="0">Hoje</button>
+     <button class="btn sm" data-act="day" data-n="1" aria-label="Próximo dia">›</button>
+     <input type="date" id="fdate" data-change="date" value="${ymd(S.date)}" style="width:auto" aria-label="Escolher data">
+     <span class="lbl">${lbl[0].toUpperCase()+lbl.slice(1)}</span></div>
+   <div class="stat"><span class="pill">${cnt} consulta${cnt===1?'':'s'}</span><span class="pill ok">${conf} confirmada${conf===1?'':'s'}</span></div>
+   <div class="tl" style="--hh:${HH}px"><div class="hours">${hours}</div>
+     <div class="cols" id="cols" data-act="slot" style="height:${total}px">${lines}${blocks}${nowLine}</div></div>`;
+}
+
+/* ---------- pacientes ---------- */
+function vPacientes(){
+  const q=S.busca.trim().toLowerCase();
+  const list=S.pac.filter(p=>p.ativo!==false).filter(p=>!q||p.nome.toLowerCase().includes(q)||String(p.codigo)===q||(p.cpf||'').includes(q)||(p.celular||'').includes(q));
+  return`<div class="head"><h1>Pacientes</h1><button class="btn pri" data-act="newpac">+ Novo paciente</button></div>
+   <input id="busca" data-input="busca" type="search" placeholder="Buscar por nome, código, CPF ou celular" value="${esc(S.busca)}" style="margin-bottom:14px" autocomplete="off">
+   <div class="list" id="plist">${plist(list)}</div>`;
+}
+function plist(list){
+  if(!list.length)return'<div class="empty">Nenhum paciente encontrado.</div>';
+  return list.slice(0,200).map(p=>{const i=idade(p.data_nascimento);return`<button class="item" data-act="ficha" data-id="${p.id}"><span class="avatar">${esc(ini(p.nome))}</span>
+    <span style="min-width:0;flex:1"><span class="nm">${esc(p.nome)}</span><br><span class="small muted">#${p.codigo}${i!=null?' · '+i+' anos':''}${p.celular?' · '+esc(p.celular):''}</span></span>
+    ${temAlerta(p.id)?'<span class="alb" aria-label="Tem atenções registradas">!</span>':''}<span class="pill">${esc(p.plano||'Particular')}</span></button>`}).join('');
+}
+
+/* ---------- ficha ---------- */
+function vFicha(){
+  const p=pacById(S.pid);if(!p)return'<div class="empty">Paciente não encontrado.</div>';
+  const i=idade(p.data_nascimento);
+  const tabs=[['dados','Dados'],['anamnese','Anamnese'],['tratamentos','Tratamentos'],['evolucao','Evolução']];
+  let body='<div class="empty">Carregando…</div>';
+  if(S.f){body=S.tab==='dados'?tDados(p):S.tab==='anamnese'?tAnamnese(p):S.tab==='tratamentos'?tTrat(p):tEvol(p)}
+  return`<div class="head"><button class="btn sm" data-act="go" data-v="pacientes">‹ Pacientes</button><span class="spacer"></span>
+     <button class="btn pri" data-act="appt" data-new="1" data-pid="${p.id}">+ Agendar</button></div>
+   <div class="row fh" style="gap:14px">${temAlerta(p.id)?alBtn(p.id,'lg'):''}<span class="avatar" style="width:54px;height:54px;font-size:19px">${esc(ini(p.nome))}</span>
+     <div style="min-width:0"><h1 style="overflow-wrap:anywhere">${esc(p.nome)}</h1><div class="muted small">Paciente #${p.codigo}${i!=null?' · '+i+' anos':''}${p.celular?' · '+esc(p.celular):''} · ${esc(p.plano||'Particular')}</div></div></div>
+   <div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${S.tab===k}" data-act="tab" data-t="${k}">${l}</button>`).join('')}</div>${body}`;
+}
+function tDados(p){
+  const f=(k,l,t='text',x='')=>`<label>${l}<input name="${k}" type="${t}" value="${esc(p[k]??'')}" ${x}></label>`;
+  const menor=p.data_nascimento&&idade(p.data_nascimento)<18;
+  return`<form class="card" data-submit="savepac" data-id="${p.id}"><div class="grid">
+    <label class="wide">Nome completo<input name="nome" required value="${esc(p.nome)}"></label>
+    <label>Sexo<select name="sexo"><option value="">—</option><option value="feminino"${p.sexo==='feminino'?' selected':''}>Feminino</option><option value="masculino"${p.sexo==='masculino'?' selected':''}>Masculino</option></select></label>
+    ${f('data_nascimento','Nascimento','date')}${f('cpf','CPF')}${f('rg','RG')}${f('celular','Celular','tel')}${f('telefone','Telefone','tel')}
+    <label class="wide">E-mail<input name="email" type="email" value="${esc(p.email??'')}"></label>
+    ${f('como_chegou','Como chegou até nós')}${f('plano','Plano')}
+    ${f('cep','CEP')}${f('logradouro','Endereço')}${f('numero','Número')}${f('bairro','Bairro')}${f('cidade','Cidade')}${f('uf','UF','text','maxlength="2"')}
+    ${menor?`<div class="wide muted small">Paciente menor de idade: preencha o responsável.</div>`:''}
+    ${f('responsavel_nome','Responsável')}${f('responsavel_cpf','CPF do responsável')}${f('responsavel_celular','Celular do responsável','tel')}
+    <label class="wide">Observações<textarea name="observacao">${esc(p.observacao??'')}</textarea></label></div>
+    <div class="row" style="margin-top:14px"><button class="btn pri" type="submit">Salvar dados</button><span class="spacer"></span>
+    ${S.confirm==='arq'?`<span class="small">Arquivar este paciente?</span><button class="btn bad sm" type="button" data-act="arquivar" data-id="${p.id}">Sim, arquivar</button><button class="btn sm" type="button" data-act="cancelconfirm">Não</button>`:`<button class="btn sm" type="button" data-act="askconfirm" data-c="arq">Arquivar paciente</button>`}</div></form>`;
+}
+function tAnamnese(p){
+  const c=(S.f.an?.conteudo)||{};
+  const chk=(L)=>`<div class="chks">${L.map(([k,l])=>`<label class="chk"><input type="checkbox" name="${k}"${c[k]?' checked':''}>${esc(l)}</label>`).join('')}</div>`;
+  const tx=(k,l,ph='')=>`<label>${l}<textarea name="${k}" placeholder="${esc(ph)}">${esc(c[k]??'')}</textarea></label>`;
+  const al=alertas(c).length;
+  return`<form data-submit="saveanam" data-id="${p.id}">
+   <div class="card sec"><h3>Queixa e histórico</h3>
+     ${tx('queixa','Queixa principal e expectativas com o tratamento')}
+     <div class="grid"><label>Última consulta odontológica<input name="ultima_consulta" value="${esc(c.ultima_consulta??'')}" placeholder="Ex.: há 6 meses"></label>
+     <label>Em tratamento médico?<select name="trat_medico"><option value="">—</option><option value="sim"${c.trat_medico==='sim'?' selected':''}>Sim</option><option value="nao"${c.trat_medico==='nao'?' selected':''}>Não</option></select></label>
+     <label>Qual médico ou motivo<input name="trat_medico_qual" value="${esc(c.trat_medico_qual??'')}"></label></div></div>
+   <div class="card sec"><h3>Alergias</h3>${chk(ALERG)}${tx('alergias_outras','Outras alergias (medicamentos, alimentos, materiais)')}</div>
+   <div class="card sec"><h3>Medicações</h3>
+     <label>Faz uso de medicações?<select name="usa_med" style="max-width:220px"><option value="">—</option><option value="sim"${c.usa_med==='sim'?' selected':''}>Sim</option><option value="nao"${c.usa_med==='nao'?' selected':''}>Não</option></select></label>
+     ${tx('medicamentos','Quais medicamentos, dose e horário','Um por linha. Ex.: Losartana 50 mg, 1x ao dia')}${chk(MEDS)}</div>
+   <div class="card sec"><h3>Condições de saúde</h3>${chk(CONDS)}${tx('cond_outras','Outras condições, cirurgias e internações')}</div>
+   <div class="card sec"><h3>Hábitos e saúde bucal</h3>${chk(HABITOS)}${chk(ODONTO)}</div>
+   <div class="card sec"><h3>Pontos de atenção da equipe</h3>
+     ${tx('atencao','Qualquer cuidado especial com este paciente','Tudo o que for escrito aqui aparece no alerta vermelho.')}
+     ${tx('obs','Observações gerais')}</div>
+   <div class="row"><button class="btn pri" type="submit">Salvar anamnese</button>${S.f.an?`<span class="small muted">Atualizada em ${dtBR(S.f.an.atualizado_em||S.f.an.criado_em)}</span>`:''}<span class="spacer"></span>
+   ${al?`<button type="button" class="btn sm" data-act="alertas" data-pid="${p.id}"><span class="alb" style="width:20px;height:20px;font-size:12px;border:0;cursor:inherit">!</span>${al} atenç${al===1?'ão':'ões'} sinalizada${al===1?'':'s'}</button>`:''}</div></form>`;
+}
+function tTrat(p){
+  const tr=S.f.tr,tot=tr.filter(t=>t.status!=='cancelado').reduce((s,t)=>s+Number(t.valor),0);
+  return`<div class="row" style="margin-bottom:12px"><div class="sum" style="margin:0;flex:1"><div><small>Total dos tratamentos</small><b class="num">${brl(tot)}</b></div></div><button class="btn pri" data-act="newtrat">+ Novo tratamento</button></div>
+  ${tr.length?`<div class="list">${tr.map(t=>`<div class="item" style="cursor:default;flex-wrap:wrap"><span style="min-width:0;flex:1 1 220px"><span class="nm">${esc(t.descricao)}</span><br><span class="small muted">${esc(t.dentes_regiao||'')}${t.profissional_id?(t.dentes_regiao?' · ':'')+esc(eqById(t.profissional_id)?.nome||''):''}</span></span>
+    <span class="num" style="font-weight:600">${brl(t.valor)}</span>
+    <select data-change="tstat" data-id="${t.id}" style="width:auto" aria-label="Situação">${opts(TSTAT,t.status)}</select></div>`).join('')}</div>`:'<div class="list"><div class="empty">Nenhum tratamento cadastrado.</div></div>'}`;
+}
+function tEvol(p){
+  return tEvol1(S.f.ev)}
+function tEvol1(ev){
+  return`<div class="row" style="margin-bottom:12px"><span class="spacer"></span><button class="btn pri" data-act="newevol">+ Nova evolução</button></div>
+  ${ev.length?`<div class="tline">${ev.map(e=>{
+    const pr=eqById(e.profissional_id),tr=S.f.tr.find(t=>t.id===e.tratamento_id),del=S.confirm==='del:'+e.id;
+    return`<article class="ent"><div class="meta"><b style="color:var(--ink)">${dBR(e.data)}</b>${pr?`<span>${esc(pr.nome)}</span>`:''}${tr?`<span class="pill info">${esc(tr.descricao.length>30?tr.descricao.slice(0,29)+'…':tr.descricao)}</span>`:''}</div>
+      <div class="txt">${esc(e.descricao)}</div>
+      <div class="acts"><button class="btn sm" data-act="editevol" data-id="${e.id}">Editar</button>
+       ${del?`<span class="small">Excluir esta evolução?</span><button class="btn bad sm" data-act="delevol" data-id="${e.id}">Sim, excluir</button><button class="btn sm" data-act="cancelconfirm">Não</button>`:`<button class="btn sm bad" data-act="askconfirm" data-c="del:${e.id}">Excluir</button>`}</div></article>`}).join('')}</div>`:'<div class="list"><div class="empty">Nenhuma evolução registrada.</div></div>'}`;
+}
+const pst=p=>p.status==='pendente'&&p.vencimento&&p.vencimento<ymd(new Date())?'atrasado':p.status;
+/* ---------- financeiro ---------- */
+const mny=v=>S.hide?'R$ ••••':brl(v);
+function finData(){
+  const q=S.fq.trim().toLowerCase();
+  const all=S.fin.map(x=>({...x,_st:pst(x),_p:pacById(x.paciente_id)}));
+  const base=all.filter(x=>x.status!=='cancelado').filter(x=>!S.mes||(x.vencimento||'').startsWith(S.mes))
+    .filter(x=>!q||(x._p?.nome||'').toLowerCase().includes(q)||(x.descricao||'').toLowerCase().includes(q));
+  const list=(S.fst==='cancelado'?all.filter(x=>x.status==='cancelado'&&(!S.mes||(x.vencimento||'').startsWith(S.mes))&&(!q||(x._p?.nome||'').toLowerCase().includes(q))):base.filter(x=>!S.fst||x._st===S.fst))
+    .sort((a,b)=>(a.vencimento||'9999')<(b.vencimento||'9999')?-1:1);
+  return{all,base,list};
+}
+function finBody(){
+  const {list}=finData();
+  const rows=list.map(x=>{const st=x._st;return`<div class="item" style="cursor:default;flex-wrap:wrap"><span style="min-width:0;flex:1 1 220px"><span class="nm">${esc(x._p?x._p.nome.replace(' (exemplo)',''):'Paciente')}</span><br><span class="small muted">${esc(x.descricao||'Pagamento')} · ${FORMAS[x.forma]}${x.vencimento?' · vence '+dBR(x.vencimento):''}${x.data_pagamento?' · pago em '+dBR(x.data_pagamento):''}</span></span>
+    <span class="num" style="font-weight:600">${mny(x.valor)}</span>
+    <span class="pill ${st==='pago'?'ok':st==='atrasado'?'bad':st==='cancelado'?'':'warn'}">${st==='pago'?'Pago':st==='atrasado'?'Atrasado':st==='cancelado'?'Cancelado':'A vencer'}</span>
+    ${x.status==='pendente'?`<button class="btn sm" data-act="pagar" data-id="${x.id}">Marcar pago</button><button class="btn sm ghost" data-act="cancelpag" data-id="${x.id}">Cancelar</button>`
+     :x.status==='pago'?`<button class="btn sm ghost" data-act="desfazerpag" data-id="${x.id}">Desfazer</button>`:''}</div>`}).join('');
+  return`<div class="list">${rows||'<div class="empty">Nenhum pagamento neste filtro.</div>'}</div>`;
+}
+const mesLbl=m=>{const [y,n]=m.split('-').map(Number);return new Date(y,n-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'})};
+function faltaCombinar(){
+  const pg=S.fin.filter(x=>x.status!=='cancelado'),out=[];
+  for(const t of S.trAll.filter(t=>t.status!=='orcamento')){
+    const comb=pg.filter(x=>x.tratamento_id===t.id).reduce((a,x)=>a+Number(x.valor),0),falta=Number(t.valor)-comb;
+    if(falta>0.009)out.push({t,comb,falta,p:pacById(t.paciente_id)});
+  }
+  return out.sort((a,b)=>b.falta-a.falta);
+}
+const niceStep=v=>{const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;return(f<=1?1:f<=2?2:f<=5?5:10)*e};
+const kfmt=v=>v>=1000?'R$ '+(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})+' mil':'R$ '+v;
+function finChart(all){
+  const base=S.mes||ymd(new Date()).slice(0,7),[y0,m0]=base.split('-').map(Number),months=[];
+  for(let i=-5;i<=6;i++){const d=new Date(y0,m0-1+i,1);months.push(`${d.getFullYear()}-${pad(d.getMonth()+1)}`)}
+  const rec={},rcv={};
+  for(const x of all){
+    if(x.status==='pago'&&x.data_pagamento){const k=x.data_pagamento.slice(0,7);rec[k]=(rec[k]||0)+Number(x.valor)}
+    if(x.status==='pendente'&&x.vencimento){const k=x.vencimento.slice(0,7);rcv[k]=(rcv[k]||0)+Number(x.valor)}
+  }
+  const mx=Math.max(1,...months.flatMap(m=>[rec[m]||0,rcv[m]||0])),step=niceStep(mx/4),top=Math.ceil(mx/step)*step;
+  const W=720,H=250,pl=S.hide?14:62,pr=8,pt=10,pb=30,gw=(W-pl-pr)/months.length,bw=Math.min(22,gw*.32),y=v=>H-pb-(v/top)*(H-pb-pt);
+  let g='',bars='',lab='';
+  for(let t=0;t<=top+1e-6;t+=step){g+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}"/>${S.hide?'':`<text x="${pl-8}" y="${y(t)+4}" text-anchor="end">${kfmt(t)}</text>`}`}
+  months.forEach((m,i)=>{
+    const cx=pl+gw*i+gw/2,[yy,mm]=m.split('-').map(Number),nm=new Date(yy,mm-1,1).toLocaleDateString('pt-BR',{month:'short'}).replace('.','');
+    if(m===(S.mes||ymd(new Date()).slice(0,7)))bars+=`<rect x="${pl+gw*i}" y="${pt}" width="${gw}" height="${H-pb-pt}" fill="var(--accent-soft)" opacity=".7"/>`;
+    const mk=(v,x,c,nome)=>{if(!v)return'';const h=H-pb-y(v);return`<g class="bar" data-tip="${esc(mesLbl(m))}|${nome}|${S.hide?'••••':brl(v)}"><path d="M${x},${H-pb} V${y(v)+4} Q${x},${y(v)} ${x+4},${y(v)} H${x+bw-4} Q${x+bw},${y(v)} ${x+bw},${y(v)+4} V${H-pb} Z" fill="${c}"/><rect x="${x-3}" y="${y(v)-4}" width="${bw+6}" height="${h+4}" fill="transparent"/></g>`};
+    bars+=mk(rec[m],cx-bw-1,'var(--c1)','Recebido')+mk(rcv[m],cx+1,'var(--c2)','A receber');
+    lab+=`<text x="${cx}" y="${H-pb+16}" text-anchor="middle">${nm}${mm===1||i===0?' '+String(yy).slice(2):''}</text>`;
+  });
+  return`<div class="chart"><div class="lg"><span><i style="background:var(--c1)"></i>Recebido (pela data do pagamento)</span><span><i style="background:var(--c2)"></i>A receber (pelo vencimento)</span></div>
+   <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Receita recebida e parcelas a receber por mês">${g}${bars}${lab}</svg></div>`;
+}
+function vFin(){
+  const all=S.fin.filter(x=>x.status!=='cancelado').map(x=>({...x,_st:pst(x)}));
+  const inM=d=>!S.mes||(d||'').startsWith(S.mes);
+  const rec=all.filter(x=>x.status==='pago'&&inM(x.data_pagamento)).reduce((t,x)=>t+Number(x.valor),0);
+  const pend=all.filter(x=>x.status==='pendente');
+  const rcvM=pend.filter(x=>inM(x.vencimento)).reduce((t,x)=>t+Number(x.valor),0);
+  const late=pend.filter(x=>x._st==='atrasado'),lateV=late.reduce((t,x)=>t+Number(x.valor),0);
+  const totRcv=pend.reduce((t,x)=>t+Number(x.valor),0),fc=faltaCombinar(),fcV=fc.reduce((t,x)=>t+x.falta,0);
+  const per=S.mes?mesLbl(S.mes):'todos os meses';
+  return`<div class="head"><h1>Financeiro</h1>
+    <button class="btn" data-act="hidevals" aria-pressed="${S.hide}">${S.hide?'Mostrar valores':'Ocultar valores'}</button>
+    <button class="btn pri" data-act="newpag">+ Nova forma de pagamento</button></div>
+   <div class="dnav" style="margin-bottom:12px"><button class="btn sm" data-act="mes" data-n="-1" aria-label="Mês anterior">‹</button>
+     <input type="month" id="fmes" data-change="mes" value="${S.mes}" style="width:auto" aria-label="Mês">
+     <button class="btn sm" data-act="mes" data-n="1" aria-label="Próximo mês">›</button>
+     <button class="btn sm${S.mes?'':' pri'}" data-act="mes" data-n="0">Todos os meses</button></div>
+   <div class="sum"><div><small>Receita de ${per}</small><b class="num" style="color:var(--ok)">${mny(rec)}</b></div>
+     <div><small>A receber em ${per}</small><b class="num">${mny(rcvM)}</b></div>
+     <div><small>Total a receber (todas as parcelas)</small><b class="num">${mny(totRcv)}</b></div>
+     <div class="clk" data-act="veratrasados" role="button" tabindex="0"><small>Atrasado (${late.length})</small><b class="num" style="color:var(--bad)">${mny(lateV)}</b></div>
+     <div class="clk" data-act="faltacombinar" role="button" tabindex="0"><small>Falta combinar (${fc.length})</small><b class="num">${mny(fcV)}</b></div></div>
+   ${finChart(all)}
+   <div class="row" style="margin-bottom:12px"><select data-change="fst" style="width:auto" aria-label="Situação"><option value="">Todas as situações</option><option value="pendente"${S.fst==='pendente'?' selected':''}>A vencer</option><option value="atrasado"${S.fst==='atrasado'?' selected':''}>Atrasados</option><option value="pago"${S.fst==='pago'?' selected':''}>Pagos</option><option value="cancelado"${S.fst==='cancelado'?' selected':''}>Cancelados</option></select>
+     <input id="fq" type="search" placeholder="Buscar por paciente ou descrição" value="${esc(S.fq)}" style="flex:1 1 220px;width:auto" autocomplete="off"></div>
+   <div id="fbody">${finBody()}</div>`;
+}
+
+/* ---------- equipe ---------- */
+function vEquipe(){
+  return`<div class="head"><h1>Equipe</h1></div>
+  <p class="muted" style="max-width:60ch;margin-top:-6px">Quem atende as consultas e registra as evoluções. A equipe não precisa de login: todos entram com o mesmo acesso da clínica.</p>
+  <form class="card row" data-submit="addeq" style="margin-bottom:16px;align-items:flex-end"><label style="flex:2 1 200px">Nome<input name="nome" required></label>
+    <label style="flex:1 1 140px">Função<select name="funcao">${opts(FUNC,'dentista')}</select></label><label style="flex:1 1 120px">CRO<input name="cro"></label>
+    <button class="btn pri" type="submit">Adicionar</button></form>
+  <div class="list">${S.equipe.map(e=>`<div class="item" style="cursor:default;flex-wrap:wrap"><span class="avatar">${esc(ini(e.nome))}</span><span style="flex:1 1 180px;min-width:0"><span class="nm">${esc(e.nome)}</span><br><span class="small muted">${FUNC[e.funcao]}${e.cro?' · CRO '+esc(e.cro):''}</span></span>
+   ${e.ativo?'<span class="pill ok">Ativo</span>':'<span class="pill">Inativo</span>'}<button class="btn sm" data-act="toggleeq" data-id="${e.id}">${e.ativo?'Desativar':'Ativar'}</button></div>`).join('')||'<div class="empty">Cadastre a equipe.</div>'}</div>`;
+}
+
+/* ===================== modais ===================== */
+function openModal(html){S.modal=`<div class="ov" data-act="ovclose"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;render()}
+function closeModal(){S.modal=null;render()}
+function apptModal(a,pid,when){
+  const d=a?new Date(a.inicio):when||new Date();
+  const tipo=a?.tipo||'consulta',pac=a?.paciente_id||pid,p=pac?pacById(pac):null;
+  const prof=a?.profissional_id||S.prof||dentistas()[0]?.id||'';
+  openModal(`<div class="row"><h2>${a?'Editar agendamento':'Novo agendamento'}</h2><span class="spacer"></span><button class="btn sm ghost" data-act="mclose" aria-label="Fechar">✕</button></div>
+  <form data-submit="saveappt" data-id="${a?.id||''}" style="display:flex;flex-direction:column;gap:14px">
+   <div class="seg" role="group" aria-label="Tipo"><button type="button" data-act="atipo" data-t="consulta" aria-pressed="${tipo==='consulta'}">Consulta</button><button type="button" data-act="atipo" data-t="compromisso" aria-pressed="${tipo==='compromisso'}">Compromisso</button></div>
+   <input type="hidden" name="tipo" id="atipo" value="${tipo}">
+   <label id="lpac" class="${tipo==='consulta'?'':'hide'}">Paciente<input name="paciente" list="dlpac" autocomplete="off" placeholder="Digite o nome ou código" value="${p?esc(pacLabel(p)):''}"></label>
+   <datalist id="dlpac">${S.pac.filter(x=>x.ativo!==false).map(x=>`<option value="${esc(pacLabel(x))}"></option>`).join('')}</datalist>
+   <label id="ltit" class="${tipo==='compromisso'?'':'hide'}">Título<input name="titulo" value="${esc(a?.titulo||'')}" placeholder="Ex.: Reunião, almoço"></label>
+   <div class="grid"><label>Profissional<select name="profissional_id"><option value="">—</option>${S.equipe.filter(e=>e.ativo||e.id===prof).map(e=>`<option value="${e.id}"${e.id===prof?' selected':''}>${esc(e.nome)}</option>`).join('')}</select></label>
+    <label>Data<input type="date" name="data" required value="${ymd(d)}"></label><label>Hora<input type="time" name="hora" required step="900" min="06:00" max="22:00" value="${hm(d)}"></label>
+    <label>Duração<select name="duracao_min">${[15,30,45,60,90,120,150,180,240,300,360,420,480].map(m=>`<option value="${m}"${m===(a?.duracao_min||60)?' selected':''}>${m>=60?(m/60).toString().replace('.',',')+' h':m+' min'}</option>`).join('')}</select></label>
+    <label>Situação<select name="status">${opts(STATUS,a?.status||'agendado')}</select></label></div>
+   <label>Observação<textarea name="observacao">${esc(a?.observacao||'')}</textarea></label>
+   <div class="row"><button class="btn pri" type="submit">Salvar</button><button class="btn" type="button" data-act="mclose">Cancelar</button><span class="spacer"></span>
+    ${a?.paciente_id?`<button class="btn sm" type="button" data-act="ficha" data-id="${a.paciente_id}">Abrir ficha</button>`:''}
+    ${a?`<button class="btn bad sm" type="button" data-act="delappt" data-id="${a.id}" id="bdel">Excluir</button>`:''}</div></form>`);
+}
+function simpleModal(title,form,submit,id=''){
+  openModal(`<div class="row"><h2>${title}</h2><span class="spacer"></span><button class="btn sm ghost" data-act="mclose" aria-label="Fechar">✕</button></div>
+  <form data-submit="${submit}" data-id="${id}" style="display:flex;flex-direction:column;gap:14px">${form}
+  <div class="row"><button class="btn pri" type="submit">Salvar</button><button class="btn" type="button" data-act="mclose">Cancelar</button></div></form>`);
+}
+const profSel=(sel)=>`<label>Profissional<select name="profissional_id"><option value="">—</option>${dentistas().map(e=>`<option value="${e.id}"${e.id===sel?' selected':''}>${esc(e.nome)}</option>`).join('')}</select></label>`;
+
+/* ===================== ações ===================== */
+const A={
+  async go(d){S.confirm=null;await go(d.v)},
+  async logout(){await api.logout();S.user=null;S.canFin=false;S.view='agenda';render()},
+  async day(d){const n=+d.n;if(n===0)S.date=todayD();else{S.date=new Date(S.date);S.date.setDate(S.date.getDate()+n)}render();await run(loadDay);render()},
+  slot(d,e){
+    if(e.target.closest('.ev'))return;
+    const r=$('#cols').getBoundingClientRect(),min=Math.round(((e.clientY-r.top)/HH*60)/15)*15+H0*60;
+    const t=new Date(S.date);t.setHours(Math.floor(min/60),min%60,0,0);apptModal(null,null,t);
+  },
+  appt(d){if(d.new){apptModal(null,d.pid||null)}else{const a=S.appts.find(x=>x.id===d.id)||S.f?.ag?.find(x=>x.id===d.id);if(a)apptModal(a)}},
+  atipo(d){$('#atipo').value=d.t;document.querySelectorAll('[data-act="atipo"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===d.t));$('#lpac').classList.toggle('hide',d.t!=='consulta');$('#ltit').classList.toggle('hide',d.t!=='compromisso')},
+  async delappt(d){
+    const b=$('#bdel');if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmar exclusão';return}
+    await run(()=>api.remove('agendamentos',d.id),'Agendamento excluído');closeModal();await run(loadDay);if(S.view==='ficha')await run(loadFicha);render();
+  },
+  alertas(d){
+    const p=pacById(d.pid),L=alertas(S.anam[d.pid]),cls={alta:'bad',media:'warn',info:'info'},rot={alta:'Atenção',media:'Cuidado',info:'Nota'};
+    openModal(`<div class="row"><span class="alb lg" style="cursor:default">!</span><h2 style="flex:1;min-width:0;overflow-wrap:anywhere">Atenções: ${esc(p?p.nome.replace(' (exemplo)',''):'')}</h2><button class="btn sm ghost" data-act="mclose" aria-label="Fechar">✕</button></div>
+    <div>${L.length?L.map(a=>`<div class="alrt"><span class="pill ${cls[a.n]}">${rot[a.n]}</span><div style="min-width:0"><b style="overflow-wrap:anywhere">${esc(a.t)}</b><span class="small muted">${esc(a.o)}</span></div></div>`).join(''):'<div class="empty">Nenhuma atenção registrada.</div>'}</div>
+    <div class="small muted">Sinalizações de apoio geradas pela anamnese. A conduta é sempre decisão do dentista.</div>
+    <div class="row"><button class="btn pri" data-act="mclose">Entendi</button><span class="spacer"></span><button class="btn" data-act="anamnese" data-pid="${d.pid}">Abrir anamnese</button></div>`);
+  },
+  async anamnese(d){await A.ficha({id:d.pid});S.tab='anamnese';render()},
+  mclose(){closeModal()},ovclose(d,e){if(e.target.classList.contains('ov'))closeModal()},
+  cancelconfirm(){S.confirm=null;render()},askconfirm(d){S.confirm=d.c;render()},
+  async ficha(d){S.modal=null;S.pid=d.id;S.tab='dados';S.f=null;S.view='ficha';S.confirm=null;render();await run(loadFicha)},
+  tab(d){S.tab=d.t;S.confirm=null;render()},
+  newpac(){simpleModal('Novo paciente',`<div class="grid"><label class="wide">Nome completo<input name="nome" required></label><label>Celular<input name="celular" type="tel"></label><label>Nascimento<input name="data_nascimento" type="date"></label><label>Como chegou até nós<input name="como_chegou"></label></div>`,'newpac')},
+  async arquivar(d){await run(()=>api.update('pacientes',d.id,{ativo:false}),'Paciente arquivado');await run(loadBase);S.confirm=null;await go('pacientes')},
+  newtrat(){simpleModal('Novo tratamento',`<div class="grid"><label class="wide">Descrição<input name="descricao" required placeholder="Ex.: Facetas em resina composta"></label><label>Dentes ou região<input name="dentes_regiao" placeholder="Ex.: 13 ao 23"></label><label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" required></label>${profSel('')}<label>Situação<select name="status">${opts(TSTAT,'orcamento')}</select></label></div>`,'newtrat')},
+  newevol(){simpleModal('Nova evolução',evolForm(null),'saveevol')},
+  editevol(d){const e=S.f.ev.find(x=>x.id===d.id);simpleModal('Editar evolução',evolForm(e),'saveevol',e.id)},
+  async delevol(d){await run(()=>api.remove('evolucoes',d.id),'Evolução excluída');S.confirm=null;await run(loadFicha);render()},
+  newpag(){
+    const trs=S.trAll.filter(t=>t.status!=='cancelado');
+    simpleModal('Nova forma de pagamento',`<div class="grid"><label class="wide">Paciente<input name="paciente" id="pgpac" list="dlpac" autocomplete="off" placeholder="Digite o nome ou código" required></label>
+     <datalist id="dlpac">${S.pac.filter(x=>x.ativo!==false).map(x=>`<option value="${esc(pacLabel(x))}"></option>`).join('')}</datalist>
+     <label class="wide">Tratamento (opcional)<select name="tratamento_id" id="pgtr"><option value="">—</option></select></label>
+     <label class="wide">Descrição<input name="descricao" placeholder="Ex.: Entrada, parcelas do tratamento"></label>
+     <label>Valor total (R$)<input name="valor" type="number" step="0.01" min="0.01" required></label><label>Forma<select name="forma">${opts(FORMAS,'pix')}</select></label>
+     <label>Dividir em vencimentos mensais<input name="n" type="number" min="1" max="36" value="1"></label><label>1º vencimento<input name="vencimento" type="date" value="${ymd(new Date())}"></label>
+     <label class="chk wide"><input type="checkbox" name="pago1">A primeira parcela já foi paga</label></div>`,'newpag')},
+  async pagar(d){await run(()=>api.update('pagamentos',d.id,{status:'pago',data_pagamento:ymd(new Date())}),'Pagamento registrado');await run(loadFin);render()},
+  async desfazerpag(d){await run(()=>api.update('pagamentos',d.id,{status:'pendente',data_pagamento:null}),'Pagamento voltou para pendente');await run(loadFin);render()},
+  async cancelpag(d){await run(()=>api.update('pagamentos',d.id,{status:'cancelado'}),'Pagamento cancelado');await run(loadFin);render()},
+  mes(d){const n=+d.n;if(n===0)S.mes='';else{const [y,m]=(S.mes||ymd(new Date()).slice(0,7)).split('-').map(Number);const x=new Date(y,m-1+n,1);S.mes=`${x.getFullYear()}-${pad(x.getMonth()+1)}`}render()},
+  veratrasados(){S.mes='';S.fst='atrasado';render()},
+  faltacombinar(){const L=faltaCombinar();
+    openModal(`<div class="row"><h2>Falta combinar pagamento</h2><span class="spacer"></span><button class="btn sm ghost" data-act="mclose" aria-label="Fechar">✕</button></div>
+    <p class="muted small" style="margin:0">Tratamentos em andamento ou entregues cujo valor ainda não está totalmente coberto pelas formas de pagamento cadastradas.</p>
+    <div>${L.length?L.map(x=>`<div class="alrt"><div style="min-width:0;flex:1"><b style="overflow-wrap:anywhere">${esc(x.p?x.p.nome.replace(' (exemplo)',''):'Paciente')}</b><span class="small muted">${esc(x.t.descricao)} · valor ${mny(x.t.valor)} · combinado ${mny(x.comb)}</span></div><b class="num" style="color:var(--warn)">${mny(x.falta)}</b></div>`).join(''):'<div class="empty">Tudo combinado.</div>'}</div>
+    <div class="row"><button class="btn pri" data-act="mclose">Fechar</button></div>`)},
+  hidevals(){S.hide=!S.hide;render()},
+  async toggleeq(d){const e=eqById(d.id);await run(()=>api.update('equipe',d.id,{ativo:!e.ativo}));await run(loadBase);render()}
+};
+function evolForm(e){
+  return`<div class="grid"><label>Data<input type="date" name="data" value="${e?.data||ymd(new Date())}" required></label>${profSel(e?.profissional_id||S.prof||dentistas()[0]?.id)}
+  <label class="wide">Tratamento (opcional)<select name="tratamento_id"><option value="">—</option>${S.f.tr.map(t=>`<option value="${t.id}"${t.id===e?.tratamento_id?' selected':''}>${esc(t.descricao)}</option>`).join('')}</select></label>
+  <label class="wide">O que foi feito<textarea name="descricao" required style="min-height:140px">${esc(e?.descricao||'')}</textarea></label></div>`;
+}
+const SUB={
+  async newpac(f){const r=await run(()=>api.insert('pacientes',clean({nome:f.nome,celular:f.celular,data_nascimento:f.data_nascimento,como_chegou:f.como_chegou})),'Paciente cadastrado');if(r){await run(loadBase);await A.ficha({id:r.id})}},
+  async savepac(f,id){const p=clean(f);p.uf=p.uf?p.uf.toUpperCase():p.uf;if(!p.plano)p.plano='Particular';await run(()=>api.update('pacientes',id,p),'Dados salvos');await run(loadBase);render()},
+  async saveanam(f,id){
+    const c={};for(const [k,v] of Object.entries(f))if(v!=='')c[k]=v==='on'?true:v;
+    const body={conteudo:c};
+    if(S.f.an)await run(()=>api.update('anamneses',S.f.an.id,{...body,atualizado_em:new Date().toISOString()}),'Anamnese salva');
+    else await run(()=>api.insert('anamneses',{paciente_id:id,...body}),'Anamnese salva');
+    await run(loadFicha)},
+  async newtrat(f){await run(()=>api.insert('tratamentos',clean({...f,paciente_id:S.pid,valor:+f.valor})),'Tratamento cadastrado');closeModal();await run(loadFicha)},
+  async saveevol(f,id){const row=clean({...f});if(id){await run(()=>api.update('evolucoes',id,row),'Evolução salva')}else await run(()=>api.insert('evolucoes',{...row,paciente_id:S.pid}),'Evolução registrada');closeModal();await run(loadFicha)},
+  async newpag(f){
+    const p=S.pac.find(x=>pacLabel(x)===f.paciente);
+    if(!p){toast('Escolha um paciente da lista.');return}
+    const n=Math.max(1,+f.n||1),total=Math.round(+f.valor*100),base=Math.floor(total/n),rows=[],ini=pYmd(f.vencimento||ymd(new Date()));
+    for(let i=0;i<n;i++){
+      const last=new Date(ini.getFullYear(),ini.getMonth()+i+1,0).getDate(),d=new Date(ini.getFullYear(),ini.getMonth()+i,Math.min(ini.getDate(),last));
+      const pago=i===0&&f.pago1==='on';
+      rows.push(clean({paciente_id:p.id,tratamento_id:f.tratamento_id,descricao:(f.descricao||'Pagamento')+(n>1?` (${i+1}/${n})`:''),valor:(i===n-1?total-base*(n-1):base)/100,forma:f.forma,parcelas:1,vencimento:ymd(d),status:pago?'pago':'pendente',data_pagamento:pago?ymd(new Date()):''}));
+    }
+    await run(()=>api.insertMany('pagamentos',rows),n>1?`${n} vencimentos criados`:'Pagamento combinado salvo');closeModal();await run(loadFin);render()},
+  async addeq(f,id,form){await run(()=>api.insert('equipe',clean({nome:f.nome,funcao:f.funcao,cro:f.cro})),'Pessoa adicionada');await run(loadBase);render()},
+  async saveappt(f,id){
+    const tipo=f.tipo,p=S.pac.find(x=>pacLabel(x)===f.paciente);
+    if(tipo==='consulta'&&!p){toast('Escolha um paciente da lista (ou cadastre antes na aba Pacientes).');return}
+    const d=pYmd(f.data);const [h,m]=f.hora.split(':');d.setHours(+h,+m,0,0);
+    const row=clean({tipo,paciente_id:tipo==='consulta'?p.id:null,profissional_id:f.profissional_id,titulo:tipo==='compromisso'?f.titulo:null,inicio:d.toISOString(),duracao_min:+f.duracao_min,status:f.status,observacao:f.observacao});
+    const clash=S.appts.find(a=>a.id!==id&&a.profissional_id===row.profissional_id&&row.profissional_id&&a.status!=='cancelado'&&new Date(a.inicio)<new Date(d.getTime()+row.duracao_min*6e4)&&new Date(new Date(a.inicio).getTime()+a.duracao_min*6e4)>d);
+    const ok=await run(()=>id?api.update('agendamentos',id,row):api.insert('agendamentos',row),id?'Agendamento atualizado':'Agendamento criado');
+    if(!ok)return;
+    S.date=pYmd(f.data);closeModal();await run(loadDay);if(S.view==='ficha')await run(loadFicha);render();
+    if(clash)toast('Atenção: este horário se sobrepõe a outro agendamento do mesmo profissional.');
+  }
+};
+SUB.login=async(f,id,form)=>{
+  const btn=form.querySelector('button[type=submit]');btn.disabled=true;$('#lerr').textContent='';
+  try{if(DEMO)S.canFin=$('#lrole').value==='1';const em=DEMO?f.email:await api.login(f.email,f.senha);await enter(em)}
+  catch(e){$('#lerr').textContent=/Invalid login/i.test(e.message||'')?'E-mail ou senha incorretos.':'Não foi possível entrar: '+(e.message||e);btn.disabled=false}
+};
+const CH={
+  prof(el){S.prof=el.value;render()},
+  async date(el){if(!el.value)return;S.date=pYmd(el.value);render();await run(loadDay);render()},
+  mes(el){S.mes=el.value;render()},
+  fst(el){S.fst=el.value;render()},
+  async tstat(el){await run(()=>api.update('tratamentos',el.dataset.id,{status:el.value}),'Situação atualizada');await run(loadFicha)}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const fn=A[b.dataset.act];if(fn)fn(b.dataset,e)});
+document.addEventListener('submit',e=>{const f=e.target.closest('form[data-submit]');if(!f)return;e.preventDefault();
+  const fd=Object.fromEntries(new FormData(f).entries());
+  if(f.dataset.submit==='login'){fd.email=$('#lemail').value;fd.senha=$('#lsenha').value}
+  const fn=SUB[f.dataset.submit];if(fn)fn(fd,f.dataset.id||undefined,f)});
+document.addEventListener('change',e=>{const el=e.target.closest('[data-change]');if(el&&CH[el.dataset.change])CH[el.dataset.change](el)});
+document.addEventListener('input',e=>{
+  if(e.target.id==='fq'){S.fq=e.target.value;$('#fbody').innerHTML=finBody();return}
+  if(e.target.id==='pgpac'){const p=S.pac.find(x=>pacLabel(x)===e.target.value);$('#pgtr').innerHTML='<option value="">—</option>'+(p?S.trAll.filter(t=>t.paciente_id===p.id&&t.status!=='cancelado').map(t=>`<option value="${t.id}">${esc(t.descricao)}</option>`).join(''):'');return}
+if(e.target.id==='busca'){S.busca=e.target.value;const q=S.busca.trim().toLowerCase();
+  const list=S.pac.filter(p=>p.ativo!==false).filter(p=>!q||p.nome.toLowerCase().includes(q)||String(p.codigo)===q||(p.cpf||'').includes(q)||(p.celular||'').includes(q));$('#plist').innerHTML=plist(list)}});
+document.addEventListener('mouseover',e=>{const g=e.target.closest?.('.bar');let t=document.querySelector('.tip');
+  if(!g){t?.remove();return}
+  const [m,n,v]=g.dataset.tip.split('|');if(!t){t=document.createElement('div');t.className='tip';document.body.appendChild(t)}
+  t.innerHTML=`<b style="text-transform:capitalize">${m}</b><br>${n}: ${v}`;const r=g.getBoundingClientRect();t.style.left=Math.max(8,Math.min(innerWidth-170,r.left+r.width/2-60))+'px';t.style.top=Math.max(8,r.top-52)+'px'});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.modal)closeModal();if((e.key==='Enter'||e.key===' ')&&e.target.matches?.('.ev,[role=button]')){e.preventDefault();e.target.click()}});
+
+/* ===================== início ===================== */
+(async()=>{
+  render();
+  if(!DEMO){const em=await api.session().catch(()=>null);if(em)enter(em)}
+})();
+</script>
+
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body></html>
