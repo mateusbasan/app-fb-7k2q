@@ -248,6 +248,28 @@ label.chk{flex-direction:row;align-items:center;gap:9px;color:var(--ink);font-si
 /* modal */
 .ov{position:fixed;inset:0;background:rgba(30,25,18,.5);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px 16px;overflow:auto}
 .modal{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);width:min(620px,100%);padding:20px;display:flex;flex-direction:column;gap:16px;margin:auto 0}
+.modal.wide{width:min(980px,100%)}
+.fday{margin:18px 0 8px;font-size:14px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.fth{position:relative;aspect-ratio:1;border:0;padding:0;border-radius:10px;overflow:hidden;background:var(--line);cursor:pointer}
+.fth img{width:100%;height:100%;object-fit:cover;display:block}
+.fth.on{outline:3px solid var(--accent);outline-offset:2px}
+.fbadge{position:absolute;left:6px;top:6px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+.fet{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(20,17,13,.75));color:#fff;font-size:11.5px;font-weight:600;padding:14px 8px 5px;text-align:left}
+.chipf{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+.chipf.on{background:var(--accent-soft);border-color:var(--brass);color:var(--ink);font-weight:600}
+.fview{position:relative;background:#14110d;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:240px}
+.fview img{max-width:100%;max-height:70vh;display:block}
+.fnav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:56px;border:0;border-radius:10px;background:rgba(255,255,255,.85);font-size:26px;cursor:pointer;color:#3A332A}
+.fnav.l{left:8px}.fnav.r{right:8px}
+.cmp{position:relative;border-radius:10px;overflow:hidden;background:#14110d;aspect-ratio:3/2;touch-action:none}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.cmp img.top{clip-path:inset(0 calc(100% - var(--x)) 0 0)}
+.cmp .bar{position:absolute;top:0;bottom:0;left:var(--x);width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.5)}
+.cmp .bar:after{content:'‹ ›';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#3A332A;border-radius:99px;padding:6px 9px;font-style:normal;font-weight:700;font-size:13px;white-space:nowrap}
+.cmp .cl{position:absolute;top:8px;left:8px;background:rgba(20,17,13,.7);color:#fff;font-size:11.5px;padding:3px 9px;border-radius:99px}
+.cmp .cl.r{left:auto;right:8px}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
 .seg button{border:0;background:transparent;padding:8px 14px;cursor:pointer;font-weight:500;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
@@ -386,7 +408,10 @@ function sbApi(){
     async insert(t,row){return ck(await sb.from(t).insert(row).select().single())},
     async insertMany(t,rows){return ck(await sb.from(t).insert(rows).select())},
     async update(t,id,p){return ck(await sb.from(t).update(p).eq('id',id).select().single())},
-    async remove(t,id){const r=await sb.from(t).delete().eq('id',id);if(r.error)throw r.error}
+    async remove(t,id){const r=await sb.from(t).delete().eq('id',id);if(r.error)throw r.error},
+    async fotoUrls(paths){if(!paths.length)return{};const out={};for(let i=0;i<paths.length;i+=100){const r=ck(await sb.storage.from('fotos').createSignedUrls(paths.slice(i,i+100),7200));r.forEach(x=>{if(x.signedUrl)out[x.path]=x.signedUrl})}return out},
+    async fotoUp(path,blob){ck(await sb.storage.from('fotos').upload(path,blob,{contentType:'image/jpeg'}))},
+    async fotoDel(paths){ck(await sb.storage.from('fotos').remove(paths))}
   };
 }
 function demoApi(){
@@ -407,7 +432,7 @@ function demoApi(){
       {id:'a3',paciente_id:'p3',conteudo:{queixa:'Clareamento e faceta no 21.',usa_med:'nao'}},
       {id:'a4',paciente_id:'p4',conteudo:{usa_med:'sim',medicamentos:'Metformina 850 mg',c_diabetes:true,m_antidiabetico:true}}],
     agendamentos:[
-      {id:'g1',tipo:'consulta',paciente_id:'p1',profissional_id:'e2',inicio:at(8,0),duracao_min:120,status:'confirmado',observacao:'Facetas em resina: 2ª sessão'},
+      {id:'g1',tipo:'consulta',paciente_id:'p1',profissional_id:'e2',inicio:at(8,0),duracao_min:120,status:'confirmado',observacao:'Facetas em resina: 2ª etapa'},
       {id:'g2',tipo:'consulta',paciente_id:'p2',profissional_id:'e1',inicio:at(9,30),duracao_min:60,status:'agendado',observacao:'Avaliação'},
       {id:'g3',tipo:'compromisso',titulo:'Reunião de equipe',profissional_id:'e2',inicio:at(12,30),duracao_min:30,status:'agendado'},
       {id:'g4',tipo:'consulta',paciente_id:'p3',profissional_id:'e2',inicio:at(14,0),duracao_min:180,status:'agendado',observacao:'Laminados cerâmicos: preparo'},
@@ -422,8 +447,11 @@ function demoApi(){
       {id:'t1',paciente_id:'p1',categoria:'facetas_resina',descricao:'Facetas em resina composta (10 dentes)',dentes_regiao:'13 ao 23',valor:18000,status:'em_andamento',profissional_id:'e2'},
       {id:'t2',paciente_id:'p3',categoria:'laminados',descricao:'Laminados cerâmicos',dentes_regiao:'14 ao 24',valor:36000,status:'em_andamento',profissional_id:'e2'}],
     evolucoes:[
-      {id:'v1',paciente_id:'p1',tratamento_id:'t1',data:dd(-14),profissional_id:'e2',descricao:'Moldagem e registro de cor. Mock-up aprovado pela paciente.',criado_em:new Date(Date.now()-14*864e5).toISOString()},
+      {id:'v1',paciente_id:'p1',tratamento_id:'t1',data:dd(-14),profissional_id:'e2',descricao:'Moldagem e registro de cor. Simulação aprovado pela paciente.',criado_em:new Date(Date.now()-14*864e5).toISOString()},
       {id:'v2',paciente_id:'p1',tratamento_id:'t1',data:dd(-1),profissional_id:'e2',descricao:'Preparo conservador e primeira camada de resina nos elementos 11 e 21.',criado_em:new Date(Date.now()-864e5).toISOString()}],
+    fotos:(()=>{const im=(a,b,t)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><rect width="600" height="400" fill="#1c1917"/><ellipse cx="300" cy="200" rx="250" ry="120" fill="${a}"/><path d="M90 200 Q300 ${t?330:300} 510 200 Q300 ${t?250:240} 90 200Z" fill="#3b1f1f"/>${[0,1,2,3,4,5,6,7].map(i=>`<rect x="${150+i*38}" y="${188-(i>1&&i<6?10:0)}" width="34" height="${i>1&&i<6?62:48}" rx="9" fill="${b}"/>`).join('')}</svg>`);
+      const L=[['p1','Inicial sorriso',-40,'#c98f7f','#d9c9a3',0],['p1','Inicial frontal',-40,'#c08878','#d6c49c',1],['p1','Inicial lateral',-40,'#c9917f','#d8c8a0',0],['p1','Simulação',-14,'#c98f7f','#efe9dc',0],['p1','Final sorriso',-1,'#c98f7f','#fbfaf6',0],['p1','Final frontal',-1,'#c08878','#fbfaf6',1],['p3','Inicial',-20,'#c08878','#dccba6',0]];
+      return L.map(([pid,nome,d,a,b,t],i)=>({id:'f'+i,paciente_id:pid,nome,etapa:/^Inicial/.test(nome)?'Inicial':/^Final/.test(nome)?'Final':'Simulação',path:im(a,b,t),thumb_path:im(a,b,t),data:dd(d),criado_em:new Date(Date.now()+d*864e5).toISOString()}))})(),
     pagamentos:[
       {id:'m1',paciente_id:'p1',tratamento_id:'t1',descricao:'Entrada (1/3)',valor:6000,forma:'pix',parcelas:1,vencimento:dd(-14),data_pagamento:dd(-14),status:'pago'},
       {id:'m2',paciente_id:'p1',tratamento_id:'t1',descricao:'Parcela (2/3)',valor:6000,forma:'cartao_credito',parcelas:1,vencimento:dd(-2),data_pagamento:null,status:'pendente'},
@@ -456,9 +484,13 @@ function demoApi(){
     async update(t,id,p){const r=db[t].find(x=>x.id===id);
       Object.assign(r,p);return cl(r)},
     async remove(t,id){const r=db[t].find(x=>x.id===id);
-      db[t]=db[t].filter(x=>x.id!==id)}
+      db[t]=db[t].filter(x=>x.id!==id)},
+    async fotoUrls(paths){return Object.fromEntries(paths.map(p=>[p,p]))},
+    async fotoUp(path,blob){FOTOBLOB[path]=URL.createObjectURL(blob)},
+    async fotoDel(){}
   };
 }
+const FOTOBLOB={};
 const api=DEMO?demoApi():sbApi();
 
 /* ===================== estado ===================== */
@@ -500,12 +532,18 @@ async function loadDay(){
 }
 async function loadFicha(){
   const id=S.pid,e={paciente_id:id};
-  const [an,tr,ev,ag]=await Promise.all([
+  const [an,tr,ev,ag,ft]=await Promise.all([
     api.list('anamneses',{eq:e}),api.list('tratamentos',{eq:e,order:[['criado_em',false]]}),
     api.list('evolucoes',{eq:e,order:[['data',false],['criado_em',false]]}),
-    api.list('agendamentos',{eq:e,order:[['inicio',false]]})]);
+    api.list('agendamentos',{eq:e,order:[['inicio',false]]}),
+    api.list('fotos',{eq:e}).catch(()=>[])]);
   if(S.pid!==id)return;
-  S.f={an:an[0]||null,tr,ev,ag};S.anam[id]=an[0]?.conteudo;render();
+  ft.forEach(f=>f.dia=fotoDia(f));ft.sort((a,b)=>a.dia<b.dia?1:a.dia>b.dia?-1:(a.path<b.path?-1:1));S.fet='';
+  const urls=await api.fotoUrls(ft.map(f=>f.thumb_path||f.path)).catch(()=>({}));
+  if(S.pid!==id)return;
+  ft.forEach(f=>f.turl=FOTOBLOB[f.thumb_path]||urls[f.thumb_path||f.path]||'');
+  S.fsel=[];S.fcmp=false;
+  S.f={an:an[0]||null,tr,ev,ag,ft};S.anam[id]=an[0]?.conteudo;render();
 }
 async function loadFin(){
   [S.fin,S.trAll]=await Promise.all([api.list('pagamentos',{order:[['vencimento',true]]}),api.list('tratamentos')]);
@@ -640,9 +678,9 @@ function plist(list){
 function vFicha(){
   const p=pacById(S.pid);if(!p)return'<div class="empty">Paciente não encontrado.</div>';
   const i=idade(p.data_nascimento);
-  const tabs=[['dados','Dados'],['evolucao','Evolução'],['anamnese','Anamnese'],['preferencias','Preferências'],['tratamentos','Tratamentos']];
+  const tabs=[['dados','Dados'],['evolucao','Evolução'],['imagens','Imagens'],['anamnese','Anamnese'],['preferencias','Preferências'],['tratamentos','Tratamentos']];
   let body='<div class="empty">Carregando…</div>';
-  if(S.f){body=S.tab==='dados'?tDados(p):S.tab==='anamnese'?tAnamnese(p):S.tab==='preferencias'?tPref(p):S.tab==='tratamentos'?tTrat(p):tEvol(p)}
+  if(S.f){body=S.tab==='dados'?tDados(p):S.tab==='anamnese'?tAnamnese(p):S.tab==='preferencias'?tPref(p):S.tab==='tratamentos'?tTrat(p):S.tab==='imagens'?tFotos(p):tEvol(p)}
   return`<div class="head"><button class="btn sm" data-act="go" data-v="pacientes">‹ Pacientes</button><span class="spacer"></span>
      <button class="btn pri" data-act="appt" data-new="1" data-pid="${p.id}">+ Agendar</button></div>
    <div class="row fh" style="gap:14px">${temAlerta(p.id)?alBtn(p.id,'lg'):''}<span class="avatar" style="width:54px;height:54px;font-size:19px">${esc(ini(p.nome))}</span>
@@ -709,6 +747,44 @@ function tTrat(p){
     <span class="num" style="font-weight:600">${brl(t.valor)}</span>
     <select data-change="tstat" data-id="${t.id}" style="width:auto" aria-label="Situação">${opts(TSTAT,t.status)}</select></div>`).join('')}</div>`:'<div class="list"><div class="empty">Nenhum tratamento cadastrado.</div></div>'}`;
 }
+const fotoDia=f=>{if(f.data)return f.data;const m=String(f.path||'').match(/_(1[5-9]\d{11})\./);return ymd(new Date(m?+m[1]:f.criado_em||Date.now()))};
+const ETAPAS=['Inicial','Simulação','Preparo','Final','Outra'];
+function tFotos(p){
+  const all=S.f.ft||[],sel=S.fsel||[],cmp=S.fcmp,fe=S.fet||'';
+  const ft=fe?all.filter(f=>(f.etapa||'')===(fe==='-'?'':fe)):all;
+  const days=[...new Set(ft.map(f=>f.dia))];
+  const usadas=ETAPAS.filter(e=>all.some(f=>f.etapa===e)),semEt=all.some(f=>!f.etapa);
+  const chip=(k,l)=>`<button class="chipf${fe===k?' on':''}" data-act="fet" data-e="${k}">${l}</button>`;
+  return`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap">${all.length>1?(cmp?`<span class="small muted" style="flex:1 1 160px">Toque em duas fotos: primeiro o <b>antes</b>, depois o <b>depois</b>.</span><button class="btn sm" data-act="fcmp">Cancelar</button>`:`<button class="btn" data-act="fcmpauto">◧ Antes e depois</button>`):''}<span class="spacer"></span>
+    ${cmp?'':`<label class="btn pri" style="cursor:pointer">+ Adicionar fotos<input type="file" accept="image/*" multiple data-change="fotoadd" data-pid="${p.id}" style="display:none"></label>`}</div>
+  ${usadas.length?`<div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">${chip('','Todas')}${usadas.map(e=>chip(e,e)).join('')}${semEt?chip('-','Sem etapa'):''}</div>`:''}
+  ${S.fup?`<div class="card small" style="margin-bottom:12px">Enviando fotos… ${S.fup}</div>`:''}
+  ${ft.length?days.map(d=>`<h3 class="fday">${pYmd(d).toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'})}<small class="muted"> · ${ft.filter(f=>f.dia===d).length} foto${ft.filter(f=>f.dia===d).length>1?'s':''}</small></h3>
+    <div class="fgrid">${ft.filter(f=>f.dia===d).map(f=>{const k=sel.indexOf(f.id);return`<button class="fth${k>=0?' on':''}" data-act="${cmp?'fpick':'fopen'}" data-id="${f.id}" aria-label="Foto ${esc(f.nome||'')}">${f.turl?`<img src="${esc(f.turl)}" alt="" loading="lazy">`:''}${k>=0?`<span class="fbadge">${k?'Depois':'Antes'}</span>`:''}${f.etapa?`<span class="fet">${esc(f.etapa)}</span>`:''}</button>`}).join('')}</div>`).join(''):'<div class="list"><div class="empty">Nenhuma foto por aqui.</div></div>'}`;
+}
+async function fotoFull(f){if(f.furl)return f.furl;if(FOTOBLOB[f.path])return f.furl=FOTOBLOB[f.path];const u=await api.fotoUrls([f.path]);return f.furl=u[f.path]||f.turl}
+async function fotoView(id){
+  const ft=S.f.ft,i=ft.findIndex(f=>f.id===id),f=ft[i];if(!f)return;
+  const del=S.confirm==='fdel:'+f.id;
+  const html=u=>`<div class="row"><b>${dBR(f.dia)}</b><span class="small muted">${i+1} de ${ft.length}</span><span class="spacer"></span><button class="btn sm" data-act="mclose">Fechar</button></div>
+    <div class="fview">${u?`<img src="${esc(u)}" alt="">`:'<div class="empty">Carregando…</div>'}
+      ${i>0?`<button class="fnav l" data-act="fopen" data-id="${ft[i-1].id}" aria-label="Foto anterior">‹</button>`:''}${i<ft.length-1?`<button class="fnav r" data-act="fopen" data-id="${ft[i+1].id}" aria-label="Próxima foto">›</button>`:''}</div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><label style="flex:1 1 130px">Etapa<select data-change="fetapa" data-id="${f.id}"><option value="">Sem etapa</option>${ETAPAS.map(e=>`<option${f.etapa===e?' selected':''}>${e}</option>`).join('')}</select></label>
+      <label style="flex:1 1 130px">Data da foto<input type="date" data-change="fdata" data-id="${f.id}" value="${esc(f.dia)}"></label></div>
+    <div class="row">${del?`<span class="small">Excluir esta foto?</span><button class="btn bad sm" data-act="fdel" data-id="${f.id}">Sim, excluir</button><button class="btn sm" data-act="fopen" data-id="${f.id}">Não</button>`:`<button class="btn sm bad" data-act="fask" data-id="${f.id}">Excluir foto</button>`}</div>`;
+  openModal(html(f.furl||''),'wide');
+  if(!f.furl){await run(()=>fotoFull(f));if(S.modal&&S.f?.ft?.includes(f))openModal(html(f.furl||f.turl),'wide')}
+}
+async function fotoCmp(){
+  const [a,b]=S.fsel.map(id=>S.f.ft.find(f=>f.id===id));if(!a||!b)return;
+  openModal('<div class="empty">Carregando…</div>');
+  await run(()=>Promise.all([fotoFull(a),fotoFull(b)]));
+  openModal(`<div class="row"><b>Antes e depois</b><span class="spacer"></span><button class="btn sm" data-act="mclose">Fechar</button></div>
+    <div class="cmp" id="cmp" style="--x:50%"><img src="${esc(b.furl)}" alt="Depois"><img class="top" src="${esc(a.furl)}" alt="Antes"><span class="cl">Antes · ${dBR(a.dia)}</span><span class="cl r">Depois · ${dBR(b.dia)}</span><i class="bar"></i>
+      <input type="range" min="0" max="100" value="50" id="cmpr" aria-label="Deslize para comparar"></div>
+    <div class="row"><span class="small muted">Arraste a linha para comparar.</span><span class="spacer"></span><button class="btn sm" data-act="fcmp">Escolher outras fotos</button></div>`,'wide');
+}
+function fotoBlob(file,max,q){return createImageBitmap(file).then(bm=>{const s=Math.min(1,max/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*s);c.height=Math.round(bm.height*s);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',q))})}
 function tEvol(p){
   return tEvol1(S.f.ev)}
 function tEvol1(ev){
@@ -925,7 +1001,7 @@ function vEquipe(){
 }
 
 /* ===================== modais ===================== */
-function openModal(html){S.modal=`<div class="ov" data-act="ovclose"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;render()}
+function openModal(html,cls=''){S.modal=`<div class="ov" data-act="ovclose"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;render()}
 function closeModal(){S.modal=null;render()}
 function apptModal(a,pid,when){
   const d=a?new Date(a.inicio):when||new Date();
@@ -1022,6 +1098,14 @@ const A={
   async exportar(){await run(exportAll,'Cópia gerada')},
   async arquivar(d){await run(()=>api.update('pacientes',d.id,{ativo:false}),'Paciente arquivado');await run(loadBase);S.confirm=null;await go('pacientes')},
   newtrat(){simpleModal('Novo tratamento',`<div class="grid"><label class="wide">Descrição<input name="descricao" required placeholder="Ex.: Facetas em resina composta"></label><label>Categoria<select name="categoria"><option value="">—</option>${opts(CATS,'')}</select></label><label>Dentes ou região<input name="dentes_regiao" placeholder="Ex.: 13 ao 23"></label><label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" required></label>${profSel('')}<label>Situação<select name="status">${opts(TSTAT,'orcamento')}</select></label></div>`,'newtrat')},
+  fopen(d){S.confirm=null;fotoView(d.id)},
+  fask(d){S.confirm='fdel:'+d.id;fotoView(d.id)},
+  async fdel(d){const f=S.f.ft.find(x=>x.id===d.id);if(!f)return;S.confirm=null;
+    await run(async()=>{await api.remove('fotos',f.id);await api.fotoDel([f.path,f.thumb_path].filter(Boolean)).catch(()=>{})},'Foto excluída');closeModal();await run(loadFicha);render()},
+  fcmp(){S.modal=null;S.fcmp=!S.fcmp;S.fsel=[];S.fet='';render()},
+  fcmpauto(){const ft=S.f.ft,a=ft.filter(f=>f.etapa==='Inicial').pop(),b=ft.find(f=>f.etapa==='Final');if(a&&b){S.fsel=[a.id,b.id];fotoCmp();setTimeout(()=>{S.fsel=[]},0)}else A.fcmp()},
+  fet(d){S.fet=d.e;render()},
+  fpick(d){const k=S.fsel.indexOf(d.id);if(k>=0)S.fsel.splice(k,1);else S.fsel.push(d.id);if(S.fsel.length===2){fotoCmp();S.fcmp=false;setTimeout(()=>{S.fsel=[]},0)}else render()},
   newevol(){simpleModal('Nova evolução',evolForm(null),'saveevol')},
   editevol(d){const e=S.f.ev.find(x=>x.id===d.id);simpleModal('Editar evolução',evolForm(e),'saveevol',e.id)},
   async delevol(d){await run(()=>api.remove('evolucoes',d.id),'Evolução excluída');S.confirm=null;await run(loadFicha);render()},
@@ -1052,6 +1136,12 @@ function evolForm(e){
   <label class="wide">O que foi feito<textarea name="descricao" required style="min-height:200px">${esc(e?.descricao||'')}</textarea></label></div>`;
 }
 const SUB={
+  async fotosend(fd){const {files,pid}=S.fpend||{};if(!files)return;S.fpend=null;closeModal();let n=0;
+    for(const file of files){S.fup=`${n+1} de ${files.length}`;render();
+      await run(async()=>{const [m,t]=await Promise.all([fotoBlob(file,1600,.82),fotoBlob(file,360,.7)]);const b=`p/${pid}/${Date.now()}_${n}`;
+        await api.fotoUp(b+'.jpg',m);await api.fotoUp(b+'_t.jpg',t);
+        await api.insert('fotos',{paciente_id:pid,nome:file.name,path:b+'.jpg',thumb_path:b+'_t.jpg',data:fd.data,etapa:fd.etapa||null})});n++}
+    S.fup='';toast(n>1?`${n} fotos adicionadas`:'Foto adicionada');await run(loadFicha);render()},
   async savepref(f,id){const pref={};for(const [k,v] of Object.entries(f))if(v!=='')pref[k]=v;await run(()=>api.update('pacientes',id,{preferencias:pref}),'Preferências salvas');await run(loadBase);render()},
   async savealuno(f,id){const row=clean({...f});row.valor_pago=+f.valor_pago||0;await run(()=>id?api.update('alunos_curso',id,row):api.insert('alunos_curso',row),id?'Aluno atualizado':'Aluno cadastrado');closeModal();await run(loadCursos);render()},
   async newpac(f){const r=await run(()=>api.insert('pacientes',clean({nome:f.nome,celular:f.celular,data_nascimento:f.data_nascimento,como_chegou:f.como_chegou})),'Paciente cadastrado');if(r){await run(loadBase);await A.ficha({id:r.id})}},
@@ -1093,6 +1183,14 @@ SUB.login=async(f,id,form)=>{
   catch(e){$('#lerr').textContent=/Invalid login/i.test(e.message||'')?'E-mail ou senha incorretos.':'Não foi possível entrar: '+(e.message||e);btn.disabled=false}
 };
 const CH={
+  fotoadd(el){const files=[...el.files].filter(f=>f.type.startsWith('image/'));if(!files.length)return;S.fpend={files,pid:el.dataset.pid};
+    openModal(`<form data-submit="fotosend" style="display:flex;flex-direction:column;gap:14px"><h2>Adicionar ${files.length} foto${files.length>1?'s':''}</h2>
+      <label>Etapa do tratamento<select name="etapa"><option value="">Sem etapa</option>${ETAPAS.map(e=>`<option>${e}</option>`).join('')}</select></label>
+      <label>Data das fotos<input type="date" name="data" value="${ymd(new Date())}" required></label>
+      <p class="small muted" style="margin:0">A etapa e a data valem para todas as fotos desta vez. Dá para ajustar cada uma depois, tocando na foto.</p>
+      <div class="row"><span class="spacer"></span><button class="btn" type="button" data-act="mclose">Cancelar</button><button class="btn pri" type="submit">Enviar</button></div></form>`)},
+  async fetapa(el){const f=S.f.ft.find(x=>x.id===el.dataset.id);if(!f)return;await run(()=>api.update('fotos',f.id,{etapa:el.value||null}),'Etapa salva');f.etapa=el.value||null},
+  async fdata(el){const f=S.f.ft.find(x=>x.id===el.dataset.id);if(!f||!el.value)return;await run(()=>api.update('fotos',f.id,{data:el.value}),'Data salva');f.data=f.dia=el.value},
   intro(el){try{localStorage.setItem('fb_intro',el.value.trim()||'Aqui é a Glória, da FB Clinic')}catch(e){}render()},
   prof(el){S.prof=el.value;render()},
   async date(el){if(!el.value)return;S.date=pYmd(el.value);render();await run(loadDay);render()},
@@ -1119,6 +1217,7 @@ async function buscaCep(el){
   }catch(err){if(msg)msg.textContent='Não consegui buscar o CEP agora. Preencha o endereço.'}
 }
 document.addEventListener('input',e=>{
+  if(e.target.id==='cmpr'){$('#cmp').style.setProperty('--x',e.target.value+'%');return}
   if(e.target.id==='pacin'){pacShow();return}
   if(e.target.id==='cep'){buscaCep(e.target);return}
   if(e.target.id==='dnasc'){const v=e.target.value,i=v?idade(v):null;$('#dage').textContent=idadeTxt(v);const r=$('#resp');if(r)r.classList.toggle('hide',!(v&&i<18));return}
