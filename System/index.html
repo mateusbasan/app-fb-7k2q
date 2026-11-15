@@ -250,6 +250,28 @@ label.chk{flex-direction:row;align-items:center;gap:9px;color:var(--ink);font-si
 .modal{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);width:min(620px,100%);padding:20px;display:flex;flex-direction:column;gap:16px;margin:auto 0}
 .modal.wide{width:min(980px,100%)}
 .fday{margin:18px 0 8px;font-size:14px}
+.orow{display:flex;flex-direction:row;gap:8px;align-items:center;flex-wrap:wrap;font-size:inherit;color:inherit}.orow input[type=checkbox]{width:20px;height:20px;flex:none}.orow input[type=number]{width:68px;padding:5px 8px}
+.opick{cursor:pointer}.opick input{position:absolute;left:6px;top:6px;width:20px;height:20px;z-index:1}.opick:has(input:checked){outline:3px solid var(--accent);outline-offset:1px}
+#orcv{position:fixed;inset:0;z-index:80;background:#EFEAE0;display:flex;flex-direction:column;color:#3A332A}
+.obar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;background:#fff;border-bottom:1px solid #E4DACB}
+.oscroll{flex:1;overflow:auto;padding:8px}
+.opg{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:60px 66px 110px;position:relative;font:15px/1.5 var(--f-body);box-shadow:0 2px 14px rgba(0,0,0,.08)}
+.opg h1{font-size:34px;margin:6px 0 4px}.osub{color:#85796B}
+.otop{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E4DACB;padding-bottom:20px}.otop img{height:54px}.otop div{text-align:right;font-size:12.5px;color:#85796B}
+.olbl{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#A6936A;font-weight:600;display:block}
+.ometa{display:grid;grid-template-columns:1fr .7fr 1.3fr;gap:18px;margin:24px 0 28px;padding:16px 22px;background:#FBF9F5;border-radius:12px}.ometa b{display:block;font-weight:600}
+.oph{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 28px}.oph.n1{grid-template-columns:1fr;max-width:60%}.oph.n3,.oph.n4{grid-template-columns:repeat(4,1fr)}.oph.n3{grid-template-columns:repeat(3,1fr)}
+.oph div{aspect-ratio:3/2;border-radius:10px;background:#1c1917;position:relative;overflow:hidden}.oph img{width:100%;height:100%;object-fit:cover;display:block}
+.oph span{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.92);font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px}
+.opg table{width:100%;border-collapse:collapse;margin-top:10px}.opg th{text-align:left;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#85796B;font-weight:600;padding:8px 0;border-bottom:1px solid #E4DACB}
+.opg td{padding:12px 12px 12px 0;border-bottom:1px solid #EFE6D4;vertical-align:top}.opg td:last-child,.opg th:last-child{text-align:right;white-space:nowrap;padding-right:0}
+.otot{display:flex;justify-content:flex-end;margin-top:18px}.otot div{background:#A6936A;color:#fff;border-radius:12px;padding:12px 24px;text-align:right}.otot span{font-size:12px;letter-spacing:.1em;text-transform:uppercase}.otot b{font:500 26px var(--f-display)}
+.opay{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:26px;font-size:14px}.opay ul{margin:8px 0 0;padding-left:18px}.opay p{margin:8px 0 0}
+.oft{position:absolute;left:66px;right:66px;bottom:40px;border-top:1px solid #E4DACB;padding-top:12px;font-size:12px;color:#85796B;display:flex;justify-content:space-between;gap:12px}
+@media print{@page{size:A4;margin:0}html,body{height:auto!important;overflow:visible!important;background:#fff!important;padding:0!important}#root,.toast,.obar{display:none!important}#orcv{position:static;display:block;background:#fff}.oscroll{overflow:visible;padding:0}.opg{zoom:1!important;box-shadow:none;width:210mm;min-height:296mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+.hrow{cursor:pointer}.hrow.big{padding:8px 2px;border:0}.hrow.big .hdt b{font-size:17px;font-family:var(--f-display);font-weight:500}
+.hcard{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.hpin{border:1px solid var(--brass);background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}.hpin b{background:var(--accent);color:#fff;border-radius:99px;padding:0 7px;margin:0 2px;font-size:12px}.hdt{display:flex;flex-direction:column;width:92px;flex:none}.hdt b{font-variant-numeric:tabular-nums}.hdt small{color:var(--muted);font-size:12px;text-transform:capitalize}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
 .fth{position:relative;aspect-ratio:1;border:0;padding:0;border-radius:10px;overflow:hidden;background:var(--line);cursor:pointer}
 .fth img{width:100%;height:100%;object-fit:cover;display:block}
@@ -276,6 +298,17 @@ label.chk{flex-direction:row;align-items:center;gap:9px;color:var(--ink);font-si
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:80;font-size:14px;max-width:min(92vw,520px);box-shadow:var(--shadow)}
 @media (min-width:821px){.toast{bottom:28px}}
 @media (prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(10px);opacity:0}}}
+.odonto{display:flex;flex-direction:column;margin-top:8px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#fff)}
+.osides{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:0 10px 4px}
+.oarclbl{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:4px}
+.oscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;margin:0 -4px;padding:0 4px}
+.arch{position:relative;height:140px}
+.obite{height:1px;background:var(--line)}
+.tooth{position:absolute;transform:translate(-50%,-50%);width:50px;height:50px;border:2px solid var(--line);background:transparent;border-radius:50%;padding:0;font-size:16px;font-weight:700;line-height:1;cursor:pointer;color:var(--ink);font-family:inherit;display:flex;align-items:center;justify-content:center;transition:transform .08s;flex:none}
+.tooth:active{transform:translate(-50%,-50%) scale(.88)}
+.tooth.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.toothmini{position:absolute;transform:translate(-50%,-50%);width:25px;height:25px;border:1.5px solid var(--line);background:var(--panel,#fff);border-radius:50%;padding:0;font-size:9.5px;font-weight:700;line-height:1;cursor:pointer;color:var(--muted);font-family:inherit;display:flex;align-items:center;justify-content:center;z-index:2}
+.toothmini.on{background:#8a6d3b;border-color:#8a6d3b;color:#fff}
 </style>
 
 </head><body><div id="root"></div>
@@ -419,6 +452,7 @@ function demoApi(){
   const now=new Date();const at=(h,m)=>{const d=todayD();d.setHours(h,m,0,0);return d.toISOString()};
   const dd=n=>{const d=todayD();d.setDate(d.getDate()+n);return ymd(d)};
   const db={_cod:4,
+    procedimentos:[['Clareamento','Dentística',2100],['Faceta em resina','Dentística',1250],['Fechamento de diastema','Dentística',1250],['Incremento em Resina Composta','Dentística',1000],['LCNC','Dentística',500],['Lite Touch','Dentística',600],['Manutenção de Resinas Compostas','Dentística',450],['Remoção de Facetas em Resina','Dentística',1000],['Restauração Indireta em Resina','Dentística',1750],['Restauração Direta','Dentística',850],['Toxina botulínica (botox)','Harmonização facial',1600],['Preenchimento','Harmonização facial',1800],['Implante','Implantodontia',1900],['Protocolo inferior','Implantodontia',20000],['Protocolo superior','Implantodontia',20000],['Contenção','Ortodontia',800],['Gengivoplastia/Gengivectomia','Periodontia',400],['Limpeza de protocolo','Periodontia',750],['Placa de mordida miorelaxante','Periodontia',1500],['Pericoronarite','Periodontia',500],['Limpeza e profilaxia','Prevenção',450],['Prótese sobre implante','Prótese',2800],['Faceta em cerâmica','Prótese',3000]].map(([nome,especialidade,valor],i)=>({id:'pr'+i,nome,especialidade,valor,ativo:true})),
     equipe:[{id:'e1',nome:'Dra. Jacqueline',funcao:'dentista',cro:'',ativo:true},{id:'e2',nome:'Dr. Mateus',funcao:'dentista',cro:'',ativo:true},{id:'e3',nome:'Dra. Maíta',funcao:'dentista',cro:'',ativo:true},{id:'e4',nome:'Dr. Lucas',funcao:'dentista',cro:'',ativo:true},{id:'e5',nome:'Dra. Marina',funcao:'dentista',cro:'',ativo:true},{id:'e6',nome:'Dra. Regina',funcao:'dentista',cro:'',ativo:true},{id:'e7',nome:'Dr. Bruno',funcao:'dentista',cro:'',ativo:true}],
     pacientes:[
       {id:'p1',codigo:1,nome:'Camila Albuquerque (exemplo)',sexo:'feminino',data_nascimento:'1989-04-12',celular:'(47) 99999-0001',plano:'Particular',cidade:'Balneário Camboriú',uf:'SC',ativo:true,etiquetas:[],como_chegou:'Indicação',preferencias:{musica:'Gosta de música',temperatura:'Mais fria',ansiedade:'Um pouco receoso(a)',restricoes:'Sem lactose',bebida:'Café sem açúcar',chamar:'Camila'}},
@@ -447,7 +481,7 @@ function demoApi(){
       {id:'t1',paciente_id:'p1',categoria:'facetas_resina',descricao:'Facetas em resina composta (10 dentes)',dentes_regiao:'13 ao 23',valor:18000,status:'em_andamento',profissional_id:'e2'},
       {id:'t2',paciente_id:'p3',categoria:'laminados',descricao:'Laminados cerâmicos',dentes_regiao:'14 ao 24',valor:36000,status:'em_andamento',profissional_id:'e2'}],
     evolucoes:[
-      {id:'v1',paciente_id:'p1',tratamento_id:'t1',data:dd(-14),profissional_id:'e2',descricao:'Moldagem e registro de cor. Simulação aprovado pela paciente.',criado_em:new Date(Date.now()-14*864e5).toISOString()},
+      {id:'v1',paciente_id:'p1',tratamento_id:'t1',data:dd(-14),profissional_id:'e2',descricao:'Moldagem e registro de cor. Simulação aprovada pela paciente.',criado_em:new Date(Date.now()-14*864e5).toISOString()},
       {id:'v2',paciente_id:'p1',tratamento_id:'t1',data:dd(-1),profissional_id:'e2',descricao:'Preparo conservador e primeira camada de resina nos elementos 11 e 21.',criado_em:new Date(Date.now()-864e5).toISOString()}],
     fotos:(()=>{const im=(a,b,t)=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400"><rect width="600" height="400" fill="#1c1917"/><ellipse cx="300" cy="200" rx="250" ry="120" fill="${a}"/><path d="M90 200 Q300 ${t?330:300} 510 200 Q300 ${t?250:240} 90 200Z" fill="#3b1f1f"/>${[0,1,2,3,4,5,6,7].map(i=>`<rect x="${150+i*38}" y="${188-(i>1&&i<6?10:0)}" width="34" height="${i>1&&i<6?62:48}" rx="9" fill="${b}"/>`).join('')}</svg>`);
       const L=[['p1','Inicial sorriso',-40,'#c98f7f','#d9c9a3',0],['p1','Inicial frontal',-40,'#c08878','#d6c49c',1],['p1','Inicial lateral',-40,'#c9917f','#d8c8a0',0],['p1','Simulação',-14,'#c98f7f','#efe9dc',0],['p1','Final sorriso',-1,'#c98f7f','#fbfaf6',0],['p1','Final frontal',-1,'#c08878','#fbfaf6',1],['p3','Inicial',-20,'#c08878','#dccba6',0]];
@@ -523,7 +557,7 @@ async function run(fn,okMsg){try{const r=await fn();if(okMsg)toast(okMsg);return
 
 /* ===================== carregamento ===================== */
 async function loadBase(){
-  let an;[S.equipe,S.pac,an]=await Promise.all([api.list('equipe',{order:[['nome',true]]}),api.list('pacientes',{order:[['nome',true]]}),api.list('anamneses')]);
+  let an;[S.equipe,S.pac,an,S.procs]=await Promise.all([api.list('equipe',{order:[['nome',true]]}),api.list('pacientes',{order:[['nome',true]]}),api.list('anamneses'),api.list('procedimentos',{order:[['nome',true]]}).catch(()=>[])]);
   S.anam=Object.fromEntries(an.map(a=>[a.paciente_id,a.conteudo]));
 }
 async function loadDay(){
@@ -559,7 +593,7 @@ async function go(view){
   if(view==='fin'&&!S.canFin)view='agenda';
   S.view=view;S.modal=null;render();
   if(view==='agenda'){await run(loadDay);render()}
-  if(view==='pacientes'||view==='equipe'){await run(loadBase);render()}
+  if(view==='pacientes'||view==='equipe'||view==='procs'){await run(loadBase);render()}
   if(view==='fin'){await run(async()=>{await loadBase();await loadFin()});render()}
   if(view==='contatos'){await run(async()=>{await loadBase();await loadContatos()});render()}
   if(view==='cursos'){await run(loadCursos);render()}
@@ -579,10 +613,10 @@ async function enter(email){
 function render(){
   const root=$('#root');const _m=root.querySelector('main');const _st=_m?_m.scrollTop:0;
   if(!S.user){root.innerHTML=vLogin();return}
-  const nav=[['agenda','Agenda',IC.cal],['pacientes','Pacientes',IC.pac],['contatos','Contatos',IC.msg],...(S.canFin?[['fin','Financeiro',IC.fin],['cursos','Cursos',IC.cur]]:[]),['equipe','Equipe',IC.eq]];
+  const nav=[['agenda','Agenda',IC.cal],['pacientes','Pacientes',IC.pac],['contatos','Contatos',IC.msg],...(S.canFin?[['fin','Financeiro',IC.fin],['cursos','Cursos',IC.cur]]:[]),['procs','Procedimentos',IC.fin],['equipe','Equipe',IC.eq]];
   const tabs=[['agenda','Agenda',IC.cal],['pacientes','Pacientes',IC.pac],...(S.canFin?[['fin','Financeiro',IC.fin]]:[])];
   const cur=S.view==='ficha'?'pacientes':S.view;
-  const body=S.loading?'<div class="empty">Carregando…</div>':S.view==='agenda'?vAgenda():S.view==='pacientes'?vPacientes():S.view==='ficha'?vFicha():S.view==='fin'?vFin():S.view==='contatos'?vContatos():S.view==='cursos'?vCursos():vEquipe();
+  const body=S.loading?'<div class="empty">Carregando…</div>':S.view==='agenda'?vAgenda():S.view==='pacientes'?vPacientes():S.view==='ficha'?vFicha():S.view==='fin'?vFin():S.view==='contatos'?vContatos():S.view==='cursos'?vCursos():S.view==='procs'?vProcs():vEquipe();
   root.innerHTML=`<div class="app">
    <aside class="rail"><img src="${LOGO}" alt="FB Clinic">
      <nav class="nav" aria-label="Principal">${nav.map(([k,l,i])=>`<button data-act="go" data-v="${k}"${cur===k?' aria-current="page"':''}>${i}${l}</button>`).join('')}</nav>
@@ -741,11 +775,54 @@ function tAnamnese(p){
 }
 function tTrat(p){
   const tr=S.f.tr,tot=tr.filter(t=>t.status!=='cancelado').reduce((s,t)=>s+Number(t.valor),0);
-  return`<div class="row" style="margin-bottom:12px"><div class="sum" style="margin:0;flex:1"><div><small>Total dos tratamentos</small><b class="num">${brl(tot)}</b></div></div><button class="btn pri" data-act="newtrat">+ Novo tratamento</button></div>
+  return`<div class="row" style="margin-bottom:12px;gap:8px;flex-wrap:wrap"><div class="sum" style="margin:0;flex:1 1 180px"><div><small>Total dos tratamentos</small><b class="num">${brl(tot)}</b></div></div><button class="btn pri" data-act="newtrat">+ Novo tratamento</button></div>
   ${tr.length?`<div class="list">${tr.map(t=>`<div class="item" style="cursor:default;flex-wrap:wrap"><span style="min-width:0;flex:1 1 220px"><span class="nm">${esc(t.descricao)}</span><br><span class="small muted">${esc(t.dentes_regiao||'')}${t.profissional_id?(t.dentes_regiao?' · ':'')+esc(eqById(t.profissional_id)?.nome||''):''}</span></span>
     <select data-change="tcat" data-id="${t.id}" style="width:auto;max-width:190px" aria-label="Categoria"><option value="">Sem categoria</option>${opts(CATS,t.categoria)}</select>
     <span class="num" style="font-weight:600">${brl(t.valor)}</span>
-    <select data-change="tstat" data-id="${t.id}" style="width:auto" aria-label="Situação">${opts(TSTAT,t.status)}</select></div>`).join('')}</div>`:'<div class="list"><div class="empty">Nenhum tratamento cadastrado.</div></div>'}`;
+    <select data-change="tstat" data-id="${t.id}" style="width:auto" aria-label="Situação">${opts(TSTAT,t.status)}</select>
+    <span class="row" style="gap:6px;flex:1 1 100%;justify-content:flex-end">${S.confirm==='tdel:'+t.id?`<span class="small">Excluir este tratamento?</span><button class="btn bad sm" data-act="deltrat" data-id="${t.id}">Sim, excluir</button><button class="btn sm" data-act="cancelconfirm">Não</button>`:`<button class="btn sm" data-act="edittrat" data-id="${t.id}">Editar</button><button class="btn sm bad" data-act="askconfirm" data-c="tdel:${t.id}">Excluir</button>`}</span></div>`).join('')}</div>`:'<div class="list"><div class="empty">Nenhum tratamento cadastrado.</div></div>'}`;
+}
+const orcCfg=()=>{try{return JSON.parse(localStorage.getItem('fb_orc')||'{}')}catch(e){return{}}};
+function orcForm(){
+  const c={pix:1,pixd:5,ent:1,entn:3,car:1,carn:10,val:'30 dias',tel:'',ig:'',...orcCfg()},tr=S.f.tr,ft=S.f.ft||[];
+  const temOrc=tr.some(t=>t.status==='orcamento');
+  openModal(`<div class="row"><h2>Orçamento em PDF</h2><span class="spacer"></span><button class="btn sm ghost" data-act="mclose" aria-label="Fechar">✕</button></div>
+  <form data-submit="orcgen" style="display:flex;flex-direction:column;gap:16px">
+   <div><h3 style="margin-bottom:8px">1. Procedimentos</h3><div class="list">${tr.map(t=>`<label class="item" style="cursor:pointer;flex-direction:row;font-size:inherit;color:inherit"><input type="checkbox" name="t_${t.id}"${(temOrc?t.status==='orcamento':true)?' checked':''} style="width:20px;height:20px;flex:none"><span style="flex:1;min-width:0"><span class="nm">${esc(t.descricao)}</span>${t.dentes_regiao?`<br><span class="small muted">${esc(t.dentes_regiao)}</span>`:''}</span><b class="num">${brl(t.valor)}</b></label>`).join('')}</div>
+     <p class="small muted" style="margin:6px 0 0">Para mudar texto ou valor, use Editar na lista de tratamentos.</p></div>
+   ${ft.length?`<div><h3 style="margin-bottom:4px">2. Fotos do caso</h3><p class="small muted" style="margin:0 0 8px">Marque até 4 fotos para aparecer no PDF.</p><div class="fgrid" style="grid-template-columns:repeat(auto-fill,minmax(78px,1fr));max-height:230px;overflow:auto">${ft.map(f=>`<label class="fth opick"><input type="checkbox" name="f_${f.id}"${f.turl?`<img src="${esc(f.turl)}" alt="">`.replace(/^/,'>'):'>'}${f.etapa?`<span class="fet">${esc(f.etapa)}</span>`:''}</label>`).join('')}</div></div>`:''}
+   <div><h3 style="margin-bottom:8px">${ft.length?3:2}. Pagamento e condições</h3>
+     <div style="display:flex;flex-direction:column;gap:8px">
+      <label class="orow"><input type="checkbox" name="pix"${c.pix?' checked':''}>À vista no Pix com <input name="pixd" type="number" min="0" max="100" step="0.5" value="${esc(c.pixd)}">% de desconto</label>
+      <label class="orow"><input type="checkbox" name="ent"${c.ent?' checked':''}>Entrada + <input name="entn" type="number" min="1" value="${esc(c.entn)}"> parcelas</label>
+      <label class="orow"><input type="checkbox" name="car"${c.car?' checked':''}>Cartão de crédito em até <input name="carn" type="number" min="1" value="${esc(c.carn)}"> vezes</label></div>
+     <div class="grid" style="margin-top:12px"><label>Validade<input name="val" value="${esc(c.val)}"></label><label>Etapas previstas<input name="etapas" placeholder="Ex.: 3 etapas, cerca de 4 semanas"></label>${profSel(tr.find(t=>t.profissional_id)?.profissional_id||defProf())}</div>
+     <label style="margin-top:12px">Mensagem ao paciente (opcional)<textarea name="msg" style="min-height:56px"></textarea></label></div>
+   <div><h3 style="margin-bottom:8px">Rodapé da clínica</h3><div class="grid"><label>Telefone / WhatsApp<input name="tel" value="${esc(c.tel)}" placeholder="(47) 00000-0000"></label><label>Instagram<input name="ig" value="${esc(c.ig)}" placeholder="@fbclinic"></label></div><p class="small muted" style="margin:6px 0 0">Fica guardado neste aparelho para os próximos orçamentos.</p></div>
+   <div class="row"><span class="spacer"></span><button class="btn" type="button" data-act="mclose">Cancelar</button><button class="btn pri" type="submit">Gerar PDF</button></div></form>`)}
+async function orcGen(f){
+  const p=pacById(S.pid),tr=S.f.tr.filter(t=>f['t_'+t.id]),fts=(S.f.ft||[]).filter(x=>f['f_'+x.id]).slice(0,4);
+  if(!tr.length){toast('Marque pelo menos um procedimento.');return}
+  try{localStorage.setItem('fb_orc',JSON.stringify({pix:f.pix?1:0,pixd:f.pixd,ent:f.ent?1:0,entn:f.entn,car:f.car?1:0,carn:f.carn,val:f.val,tel:f.tel,ig:f.ig}))}catch(e){}
+  closeModal();toast('Montando o orçamento…');
+  await run(()=>Promise.all(fts.map(fotoFull)));
+  const tot=tr.reduce((s,t)=>s+Number(t.valor),0),pr=eqById(f.profissional_id),hoje=new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+  const pg=[f.pix?`À vista no Pix${+f.pixd>0?` com ${String(f.pixd).replace('.',',')}% de desconto (${brl(tot*(1-f.pixd/100))})`:''}`:'',f.ent?`Entrada + ${f.entn} parcela${+f.entn>1?'s':''}`:'',f.car?`Cartão de crédito em até ${f.carn} vezes`:''].filter(Boolean);
+  const nm=p.nome.replace(' (exemplo)','');
+  document.getElementById('orcv')?.remove();
+  const v=document.createElement('div');v.id='orcv';
+  v.innerHTML=`<div class="obar"><b>Orçamento · ${esc(nm)}</b><span class="spacer"></span><button class="btn pri" data-act="orcprint">Salvar em PDF / Imprimir</button><button class="btn" data-act="orcclose">Fechar</button></div>
+  <div class="oscroll"><div class="opg" id="opg" style="zoom:${Math.min(1,(innerWidth-16)/794)}">
+   <div class="otop"><img src="${LOGO}" alt="FB Clinic"><div>Av. Carlos Drummond de Andrade, 631<br>Praia dos Amores · Balneário Camboriú</div></div>
+   <div class="olbl" style="margin-top:30px">Plano de tratamento</div><h1>${esc(nm)}</h1>${pr?`<div class="osub">Preparado especialmente para você por ${esc(pr.nome)}</div>`:''}
+   <div class="ometa"><div><span class="olbl">Data</span><b>${hoje}</b></div><div><span class="olbl">Validade</span><b>${esc(f.val||'—')}</b></div><div><span class="olbl">Profissional</span><b>${pr?esc(pr.nome)+(pr.cro?' · '+esc(pr.cro):''):'—'}</b></div></div>
+   ${fts.length?`<div class="olbl">Fotos do caso</div><div class="oph n${fts.length}">${fts.map(x=>`<div><img src="${esc(x.furl||x.turl)}" alt="">${x.etapa?`<span>${esc(x.etapa)}</span>`:''}</div>`).join('')}</div>`:''}
+   <div class="olbl">Tratamento proposto</div>
+   <table><tr><th>Procedimento</th><th>Região</th><th>Investimento</th></tr>${tr.map(t=>`<tr><td><b>${esc(t.descricao)}</b></td><td>${esc(t.dentes_regiao||'—')}</td><td>${Number(t.valor)>0?brl(t.valor):'Cortesia'}</td></tr>`).join('')}</table>
+   <div class="otot"><div><span>Investimento total</span><br><b>${brl(tot)}</b></div></div>
+   <div class="opay">${pg.length?`<div><div class="olbl">Formas de pagamento</div><ul>${pg.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}${f.etapas||f.msg?`<div><div class="olbl">Como será</div>${f.etapas?`<p>${esc(f.etapas)}</p>`:''}${f.msg?`<p>${esc(f.msg)}</p>`:''}</div>`:''}</div>
+   <div class="oft"><span>FB Clinic · Odontologia de alta performance</span><span>${esc([f.tel,f.ig].filter(Boolean).join(' · '))}</span></div></div></div>`;
+  document.body.appendChild(v);document.title='Orçamento - '+nm;
 }
 const fotoDia=f=>{if(f.data)return f.data;const m=String(f.path||'').match(/_(1[5-9]\d{11})\./);return ymd(new Date(m?+m[1]:f.criado_em||Date.now()))};
 const ETAPAS=['Inicial','Simulação','Preparo','Final','Outra'];
@@ -786,7 +863,31 @@ async function fotoCmp(){
 }
 function fotoBlob(file,max,q){return createImageBitmap(file).then(bm=>{const s=Math.min(1,max/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*s);c.height=Math.round(bm.height*s);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',q))})}
 function tEvol(p){
-  return tEvol1(S.f.ev)}
+  return tEvol1(S.f.ev)+tHist()}
+function histData(){
+  const ag=(S.f.ag||[]).filter(a=>a.tipo!=='compromisso'),now=Date.now();
+  const fut=ag.filter(a=>new Date(a.inicio).getTime()>=now&&a.status!=='cancelado').reverse(),pas=ag.filter(a=>!fut.includes(a));
+  return{ag,fut,pas}}
+function histRow(a,big){
+  const cls={confirmado:'ok',atendido:'ok',cancelado:'bad',faltou:'bad',agendado:'info',remarcado:'warn',em_atendimento:'warn'};
+  const d=new Date(a.inicio),pr=eqById(a.profissional_id);
+  return`<button class="item hrow${big?' big':''}" data-act="appt" data-id="${a.id}"><span class="hdt"><b>${d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})}</b><small>${d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','')} · ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</small></span>
+    <span style="flex:1;min-width:0"><span class="nm" style="font-weight:500">${esc(a.observacao||a.titulo||'Consulta')}</span><br><span class="small muted">${pr?esc(pr.nome)+' · ':''}${a.duracao_min>=60?(a.duracao_min/60).toLocaleString('pt-BR')+'h':a.duracao_min+' min'}</span></span>
+    <span class="pill ${cls[a.status]||''}">${STATUS[a.status]||a.status}</span></button>`}
+function tHist(){
+  const {ag,fut,pas}=histData(),u=pas[0],nx=fut[0];
+  if(!ag.length)return'';
+  return`<div class="hcard"><div class="row" style="gap:8px"><span class="small muted" style="font-weight:600;letter-spacing:.04em;text-transform:uppercase">${u?'Último agendamento':'Próximo agendamento'}</span><span class="spacer"></span>
+     <button class="hpin" data-act="hist" aria-label="Abrir histórico completo de agendamentos">Histórico completo <b>${ag.length}</b> ›</button></div>
+   <div class="list" style="border:0;border-radius:0;background:transparent">${histRow(u||nx,true)}</div>
+   ${u&&nx?`<div class="small muted" style="padding:0 2px">Próximo: <b style="color:var(--ink)">${new Date(nx.inicio).toLocaleDateString('pt-BR')}</b> às ${new Date(nx.inicio).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}${nx.observacao?' · '+esc(nx.observacao):''}</div>`:''}</div>`;
+}
+function histModal(){
+  const {ag,fut,pas}=histData(),n=k=>ag.filter(a=>a.status===k).length;
+  openModal(`<div class="row"><h2>Histórico de agendamentos</h2><span class="spacer"></span><button class="btn sm" data-act="mclose">Fechar</button></div>
+   <p class="muted small" style="margin:0">${fut.length} próximo${fut.length===1?'':'s'} · ${pas.length} anterior${pas.length===1?'':'es'}${n('faltou')?` · ${n('faltou')} falta${n('faltou')>1?'s':''}`:''}${n('cancelado')?` · ${n('cancelado')} cancelado${n('cancelado')>1?'s':''}`:''}</p>
+   ${fut.length?`<div><h3 class="fday" style="margin-top:0">Próximos</h3><div class="list">${fut.map(a=>histRow(a)).join('')}</div></div>`:''}
+   ${pas.length?`<div><h3 class="fday" style="margin-top:0">Anteriores</h3><div class="list">${pas.map(a=>histRow(a)).join('')}</div></div>`:''}`)}
 function tEvol1(ev){
   return`<div class="row" style="margin-bottom:12px"><span class="spacer"></span><button class="btn pri" data-act="newevol">+ Nova evolução</button></div>
   ${ev.length?`<div class="tline">${ev.map(e=>{
@@ -1001,7 +1102,8 @@ function vEquipe(){
 }
 
 /* ===================== modais ===================== */
-function openModal(html,cls=''){S.modal=`<div class="ov" data-act="ovclose"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;render()}
+function centerOdonto(){requestAnimationFrame(()=>document.querySelectorAll('.oarch:not(.hide) .oscroll').forEach(e=>{e.scrollLeft=(e.scrollWidth-e.clientWidth)/2}))}
+function openModal(html,cls=''){S.modal=`<div class="ov" data-act="ovclose"><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div></div>`;render();centerOdonto()}
 function closeModal(){S.modal=null;render()}
 function apptModal(a,pid,when){
   const d=a?new Date(a.inicio):when||new Date();
@@ -1037,12 +1139,63 @@ function simpleModal(title,form,submit,id=''){
   <div class="row"><button class="btn pri" type="submit">Salvar</button><button class="btn" type="button" data-act="mclose">Cancelar</button></div></form>`);
 }
 const defProf=()=>{const re=S.canFin?/mateus/i:/ma[ií]ta/i;return dentistas().find(e=>re.test(e.nome))?.id||dentistas()[0]?.id||''};
+const PROC_SEED=`Clareamento|Dentística|2100;Faceta em resina|Dentística|1250;Fechamento de diastema|Dentística|1250;Incremento em Resina Composta|Dentística|1000;LCNC|Dentística|500;Lite Touch|Dentística|600;Manutenção de Resinas Compostas|Dentística|450;Remoção de Facetas em Resina|Dentística|1000;Restauração Indireta em Resina|Dentística|1750;Restauração Direta|Dentística|850;Toxina botulínica (botox)|Harmonização facial|1600;Preenchimento|Harmonização facial|1800;Implante|Implantodontia|1900;Protocolo inferior|Implantodontia|20000;Protocolo superior|Implantodontia|20000;Contenção|Ortodontia|800;Gengivoplastia/Gengivectomia|Periodontia|400;Limpeza de protocolo|Periodontia|750;Placa de mordida miorelaxante|Periodontia|1500;Pericoronarite|Periodontia|500;Limpeza e profilaxia|Prevenção|450;Prótese sobre implante|Prótese|2800;Faceta em cerâmica|Prótese|3000`;
+const ESPS=['Dentística','Prótese','Implantodontia','Periodontia','Prevenção','Ortodontia','Endodontia','Cirurgia','Harmonização facial','Radiologia','Testes e exames laboratoriais','Urgência','Outros'];
+const procByName=n=>(S.procs||[]).find(p=>p.ativo!==false&&p.nome.trim().toLowerCase()===String(n||'').trim().toLowerCase());
+const tratForm=t=>`<div class="grid"><label class="wide">Procedimento<input name="descricao" id="tdesc" list="procdl" required autocomplete="off" placeholder="Escolha da tabela ou digite um novo" value="${esc(t?.descricao??'')}"><datalist id="procdl">${(S.procs||[]).filter(p=>p.ativo!==false).map(p=>`<option value="${esc(p.nome)}">${brl(p.valor)}</option>`).join('')}</datalist></label>
+  <label>Quantidade<input id="tqt" type="number" min="1" step="1" value="1" inputmode="numeric"></label><label>Valor total (R$)<input name="valor" id="tval" type="number" step="0.01" min="0" required value="${t?Number(t.valor):''}"></label>
+  <div class="wide small muted" id="thint" style="margin-top:-6px">O valor pode ser ajustado conforme a negociação.</div>
+  <label class="wide orow hide" id="tsave" style="flex-direction:row;flex-wrap:nowrap;align-items:flex-start"><input type="checkbox" name="_save" style="width:20px;height:20px;flex:none;margin-top:2px">Guardar este procedimento na tabela, com este valor</label>
+  <label>Categoria<select name="categoria"><option value="">—</option>${opts(CATS,t?.categoria||'')}</select></label><label>Situação<select name="status">${opts(TSTAT,t?.status||'orcamento')}</select></label>
+  <div class="wide"><label>Dente(s) a tratar<input name="dentes_regiao" id="dreg" placeholder="Toque nos dentes abaixo ou digite (ex.: 13 ao 23)" value="${esc(t?.dentes_regiao??'')}"></label>${odontoHTML(t?.dentes_regiao)}</div></div>`;
+const TEETH_UP=[18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28];
+const TEETH_DN=[48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38];
+const TEETH_UP_DEC=[55,54,53,52,51,61,62,63,64,65];
+const TEETH_DN_DEC=[85,84,83,82,81,71,72,73,74,75];
+const toothBtn=(n,x,y,set)=>`<button type="button" class="tooth${set.has(String(n))?' on':''}" style="left:${x}px;top:${y}px" data-n="${n}">${n}</button>`;
+function archHTML(teeth,isLower,W,set,kids){
+  const n=teeth.length,yBite=isLower?26:102,amp=72,PAD=28;
+  const cells=teeth.map((t,i)=>{
+    const d=(i/(n-1)-0.5)*2,x=PAD+(W-PAD*2)*i/(n-1),y=isLower?yBite+amp*d*d:yBite-amp*d*d;
+    let mini='';
+    if(kids){const q=Math.floor(t/10),u=t%10;
+      if(u>=1&&u<=5){const decN=(q+4)*10+u,mx=x+18,my=y+(isLower?16:-16);
+        mini=`<button type="button" class="toothmini${set.has(String(decN))?' on':''}" style="left:${mx}px;top:${my}px" data-n="${decN}">${decN}</button>`}}
+    return toothBtn(t,x,y,set)+mini;
+  }).join('');
+  return `<div class="arch" style="width:${W}px">${cells}</div>`;
+}
+const archPair=(up,dn,W,set,kids)=>`<div class="oscroll"><div style="width:${W}px">${archHTML(up,false,W,set,kids)}<div class="obite" style="width:${W}px"></div>${archHTML(dn,true,W,set,kids)}</div></div>`;
+function odontoHTML(sel){const set=new Set(String(sel||'').split(/[^0-9]+/).filter(Boolean));
+  const Wp=TEETH_UP.length*55;
+  return `<div class="odonto"><div class="seg" style="margin-bottom:10px"><button type="button" data-odmode="perm" aria-pressed="true">Adulto</button><button type="button" data-odmode="dec" aria-pressed="false">Infantil</button></div>
+  <div class="osides"><span>Direita</span><span>Esquerda</span></div>
+  <div class="oarch" data-m="perm">${archPair(TEETH_UP,TEETH_DN,Wp,set,false)}</div>
+  <div class="oarch hide" data-m="dec">${archPair(TEETH_UP,TEETH_DN,Wp,set,true)}</div>
+  <div class="small muted" style="text-align:center;margin-top:6px">Toque na bolinha maior (permanente) ou na menor (decíduo) · Arraste para o lado para ver o fundo da boca</div></div>`;
+}
+function tratCalc(fill){const d=$('#tdesc'),q=Math.max(1,+$('#tqt').value||1),p=procByName(d.value),h=$('#thint'),sv=$('#tsave');
+  if(p){if(fill)$('#tval').value=(Number(p.valor)*q).toFixed(2);h.innerHTML=`Tabela: <b>${brl(p.valor)}</b>${q>1?` × ${q} = <b>${brl(p.valor*q)}</b>`:''}. O valor pode ser ajustado conforme a negociação.`;sv.classList.add('hide')}
+  else{h.textContent='O valor pode ser ajustado conforme a negociação.';sv.classList.toggle('hide',!d.value.trim())}}
+async function tratSaveProc(f){if(!f._save||procByName(f.descricao))return;const q=Math.max(1,+($('#tqt')?.value)||1);
+  await api.insert('procedimentos',{nome:f.descricao.trim(),especialidade:'Outros',valor:+(f.valor/q).toFixed(2),ativo:true});S.procs=await api.list('procedimentos',{order:[['nome',true]]})}
+const tratData=f=>{const o={...f,valor:+f.valor};delete o._save;return clean(o)};
+function vProcs(){
+  const q=(S.pq||'').trim().toLowerCase(),ps=(S.procs||[]).filter(p=>!q||p.nome.toLowerCase().includes(q)||(p.especialidade||'').toLowerCase().includes(q));
+  const esps=[...new Set(ps.map(p=>p.especialidade||'Outros'))].sort((a,b)=>a.localeCompare(b,'pt'));
+  return`<div class="head"><h1>Procedimentos</h1><span class="spacer"></span><button class="btn pri" data-act="newproc">+ Novo procedimento</button></div>
+  <p class="muted" style="max-width:60ch;margin-top:-6px">Tabela de valores da clínica. Ao lançar um tratamento, o valor vem daqui e pode ser ajustado em cada negociação.</p>
+  <input id="procq" type="search" placeholder="Buscar procedimento" value="${esc(S.pq||'')}" style="margin-bottom:12px">
+  ${esps.map(e=>`<h3 class="fday">${esc(e)}</h3><div class="list">${ps.filter(p=>(p.especialidade||'Outros')===e).map(p=>`<div class="item" style="cursor:default;flex-wrap:wrap"><span style="flex:1 1 160px;min-width:0"><span class="nm">${esc(p.nome)}</span></span><b class="num">${brl(p.valor)}</b>
+    ${S.confirm==='pdel:'+p.id?`<span class="row" style="gap:6px;flex:1 1 100%;justify-content:flex-end"><span class="small">Excluir da tabela?</span><button class="btn bad sm" data-act="delproc" data-id="${p.id}">Sim, excluir</button><button class="btn sm" data-act="cancelconfirm">Não</button></span>`:`<span class="row" style="gap:6px;flex:1 1 100%;justify-content:flex-end"><button class="btn sm" data-act="editproc" data-id="${p.id}">Editar</button><button class="btn sm bad" data-act="askconfirm" data-c="pdel:${p.id}">Excluir</button></span>`}</div>`).join('')}</div>`).join('')||((S.procs||[]).length?'<div class="list"><div class="empty">Nenhum procedimento encontrado.</div></div>':`<div class="card"><p style="margin:0 0 10px">A tabela está vazia. Quer carregar a tabela inicial da clínica (${PROC_SEED.split(';').length} procedimentos, com os valores combinados)?</p><button class="btn pri" data-act="procseed">Carregar tabela inicial</button></div>`)}`;
+}
+const procForm=p=>`<div class="grid"><label class="wide">Nome<input name="nome" required value="${esc(p?.nome??'')}"></label><label>Especialidade<select name="especialidade">${ESPS.map(e=>`<option${(p?.especialidade||'Outros')===e?' selected':''}>${e}</option>`).join('')}</select></label><label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" required value="${p?Number(p.valor):''}"></label></div>`;
 const profSel=(sel)=>`<label>Profissional<select name="profissional_id"><option value="">—</option>${dentistas().map(e=>`<option value="${e.id}"${e.id===sel?' selected':''}>${esc(e.nome)}</option>`).join('')}</select></label>`;
 
 /* ===================== ações ===================== */
 const A={
   async go(d){S.confirm=null;await go(d.v)},
-  menu(){const it=[['contatos','Contatos',IC.msg],...(S.canFin?[['cursos','Cursos',IC.cur]]:[]),['equipe','Equipe',IC.eq]];
+  menu(){const it=[['contatos','Contatos',IC.msg],...(S.canFin?[['cursos','Cursos',IC.cur]]:[]),['procs','Procedimentos',IC.fin],['equipe','Equipe',IC.eq]];
     openModal(`<h2>Menu</h2><div class="menul">${it.map(([k,l,i])=>`<button class="btn" data-act="go" data-v="${k}">${i}${l}</button>`).join('')}<button class="btn" data-act="logout">${IC.out}Sair</button></div><div class="small muted">${esc(S.user)}</div><div class="row"><button class="btn" data-act="mclose">Fechar</button></div>`)},
   async logout(){S.modal=null;await api.logout();S.user=null;S.canFin=false;S.view='agenda';render()},
   async day(d,_e,dir){const n=+d.n;if(n===0)S.date=todayD();else{S.date=new Date(S.date);S.date.setDate(S.date.getDate()+n*DV)}
@@ -1097,7 +1250,10 @@ const A={
   async arqaluno(d){if(!confirm('Arquivar este aluno? Ele sai da lista, mas os dados continuam guardados.'))return;await run(()=>api.update('alunos_curso',d.id,{ativo:false}),'Aluno arquivado');closeModal();await run(loadCursos);render()},
   async exportar(){await run(exportAll,'Cópia gerada')},
   async arquivar(d){await run(()=>api.update('pacientes',d.id,{ativo:false}),'Paciente arquivado');await run(loadBase);S.confirm=null;await go('pacientes')},
-  newtrat(){simpleModal('Novo tratamento',`<div class="grid"><label class="wide">Descrição<input name="descricao" required placeholder="Ex.: Facetas em resina composta"></label><label>Categoria<select name="categoria"><option value="">—</option>${opts(CATS,'')}</select></label><label>Dentes ou região<input name="dentes_regiao" placeholder="Ex.: 13 ao 23"></label><label>Valor (R$)<input name="valor" type="number" step="0.01" min="0" required></label>${profSel('')}<label>Situação<select name="status">${opts(TSTAT,'orcamento')}</select></label></div>`,'newtrat')},
+  newtrat(){simpleModal('Novo tratamento',tratForm(null),'newtrat')},
+  edittrat(d){const t=S.f.tr.find(x=>x.id===d.id);if(t)simpleModal('Editar tratamento',tratForm(t),'edittrat',t.id)},
+  async deltrat(d){S.confirm=null;try{await api.remove('tratamentos',d.id);toast('Tratamento excluído')}catch(e){toast(/foreign key|violates/i.test(e.message||'')?'Este tratamento tem pagamentos ou evoluções ligados a ele. Exclua ou desvincule esses registros antes.':'Não foi possível excluir: '+(e.message||e))}await run(loadFicha);render()},
+  orc(){orcForm()},orcprint(){window.print()},orcclose(){document.getElementById('orcv')?.remove();document.title='FB Clinic'},
   fopen(d){S.confirm=null;fotoView(d.id)},
   fask(d){S.confirm='fdel:'+d.id;fotoView(d.id)},
   async fdel(d){const f=S.f.ft.find(x=>x.id===d.id);if(!f)return;S.confirm=null;
@@ -1105,6 +1261,12 @@ const A={
   fcmp(){S.modal=null;S.fcmp=!S.fcmp;S.fsel=[];S.fet='';render()},
   fcmpauto(){const ft=S.f.ft,a=ft.filter(f=>f.etapa==='Inicial').pop(),b=ft.find(f=>f.etapa==='Final');if(a&&b){S.fsel=[a.id,b.id];fotoCmp();setTimeout(()=>{S.fsel=[]},0)}else A.fcmp()},
   fet(d){S.fet=d.e;render()},
+  hist(){histModal()},
+  newproc(){simpleModal('Novo procedimento',procForm(null),'newproc')},
+  async procseed(){if((S.procs||[]).length)return;const rows=PROC_SEED.split(';').map(x=>{const [nome,especialidade,valor]=x.split('|');return{nome,especialidade,valor:+valor,ativo:true}});
+    await run(async()=>{for(const r of rows)await api.insert('procedimentos',r)},'Tabela carregada');await run(loadBase);render()},
+  editproc(d){const p=S.procs.find(x=>x.id===d.id);if(p)simpleModal('Editar procedimento',procForm(p),'editproc',p.id)},
+  async delproc(d){S.confirm=null;await run(()=>api.remove('procedimentos',d.id),'Procedimento excluído');await run(loadBase);render()},
   fpick(d){const k=S.fsel.indexOf(d.id);if(k>=0)S.fsel.splice(k,1);else S.fsel.push(d.id);if(S.fsel.length===2){fotoCmp();S.fcmp=false;setTimeout(()=>{S.fsel=[]},0)}else render()},
   newevol(){simpleModal('Nova evolução',evolForm(null),'saveevol')},
   editevol(d){const e=S.f.ev.find(x=>x.id===d.id);simpleModal('Editar evolução',evolForm(e),'saveevol',e.id)},
@@ -1152,7 +1314,11 @@ const SUB={
     if(S.f.an)await run(()=>api.update('anamneses',S.f.an.id,{...body,atualizado_em:new Date().toISOString()}),'Anamnese salva');
     else await run(()=>api.insert('anamneses',{paciente_id:id,...body}),'Anamnese salva');
     await run(loadFicha)},
-  async newtrat(f){await run(()=>api.insert('tratamentos',clean({...f,paciente_id:S.pid,valor:+f.valor})),'Tratamento cadastrado');closeModal();await run(loadFicha)},
+  async edittrat(f,id){await run(async()=>{await tratSaveProc(f);await api.update('tratamentos',id,tratData(f))},'Tratamento atualizado');closeModal();await run(loadFicha)},
+  async newproc(f){await run(()=>api.insert('procedimentos',{nome:f.nome.trim(),especialidade:f.especialidade,valor:+f.valor,ativo:true}),'Procedimento adicionado');closeModal();await run(loadBase);render()},
+  async editproc(f,id){await run(()=>api.update('procedimentos',id,{nome:f.nome.trim(),especialidade:f.especialidade,valor:+f.valor}),'Procedimento atualizado');closeModal();await run(loadBase);render()},
+  orcgen(f){orcGen(f)},
+  async newtrat(f){await run(async()=>{await tratSaveProc(f);await api.insert('tratamentos',{...tratData(f),paciente_id:S.pid})},'Tratamento cadastrado');closeModal();await run(loadFicha)},
   async saveevol(f,id){const row=clean({...f});if(id){await run(()=>api.update('evolucoes',id,row),'Evolução salva')}else await run(()=>api.insert('evolucoes',{...row,paciente_id:S.pid}),'Evolução registrada');closeModal();await run(loadFicha)},
   async newpag(f){
     const p=S.pac.find(x=>pacLabel(x)===f.paciente);
@@ -1199,7 +1365,14 @@ const CH={
   async tcat(el){await run(()=>api.update('tratamentos',el.dataset.id,{categoria:el.value||null}),'Categoria atualizada');await run(loadFicha)},
   async tstat(el){await run(()=>api.update('tratamentos',el.dataset.id,{status:el.value}),'Situação atualizada');await run(loadFicha)}
 };
-document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const fn=A[b.dataset.act];if(fn)fn(b.dataset,e)});
+document.addEventListener('click',e=>{
+  const od=e.target.closest('[data-odmode]');
+  if(od){const box=od.closest('.odonto');box.querySelectorAll('[data-odmode]').forEach(x=>x.setAttribute('aria-pressed',x===od?'true':'false'));
+    box.querySelectorAll('.oarch').forEach(x=>x.classList.toggle('hide',x.dataset.m!==od.dataset.odmode));
+    const vis=box.querySelector('.oarch:not(.hide)'),sel=[...vis.querySelectorAll('.tooth.on,.toothmini.on')].map(x=>+x.dataset.n).sort((a,b)=>a-b).join(', '),inp=$('#dreg');if(inp)inp.value=sel;centerOdonto();return}
+  const t=e.target.closest('.tooth,.toothmini');
+  if(t){t.classList.toggle('on');const vis=t.closest('.oarch'),sel=[...vis.querySelectorAll('.tooth.on,.toothmini.on')].map(x=>+x.dataset.n).sort((a,b)=>a-b).join(', '),inp=$('#dreg');if(inp)inp.value=sel;return}
+  const b=e.target.closest('[data-act]');if(!b)return;const fn=A[b.dataset.act];if(fn)fn(b.dataset,e)});
 document.addEventListener('submit',e=>{const f=e.target.closest('form[data-submit]');if(!f)return;e.preventDefault();
   const fd=Object.fromEntries(new FormData(f).entries());
   if(f.dataset.submit==='login'){fd.email=$('#lemail').value;fd.senha=$('#lsenha').value}
@@ -1219,6 +1392,8 @@ async function buscaCep(el){
 document.addEventListener('input',e=>{
   if(e.target.id==='cmpr'){$('#cmp').style.setProperty('--x',e.target.value+'%');return}
   if(e.target.id==='pacin'){pacShow();return}
+  if(e.target.id==='tdesc'||e.target.id==='tqt'){tratCalc(true);return}
+  if(e.target.id==='procq'){S.pq=e.target.value;const p=e.target.selectionStart;render();const n=$('#procq');n.focus();n.setSelectionRange(p,p);return}
   if(e.target.id==='cep'){buscaCep(e.target);return}
   if(e.target.id==='dnasc'){const v=e.target.value,i=v?idade(v):null;$('#dage').textContent=idadeTxt(v);const r=$('#resp');if(r)r.classList.toggle('hide',!(v&&i<18));return}
   if(e.target.id==='cq'){S.cq=e.target.value;$('#clist').innerHTML=clist();return}
